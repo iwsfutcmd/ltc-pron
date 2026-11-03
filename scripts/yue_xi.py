@@ -9,6 +9,12 @@ when rounded), so each 溪 reading has both candidate forms. Then:
 - possible conditioning: openness, division, tone, frequency, and register
   (vernacular share of words using the k- form vs the h- form)
 - literary coverage under several policies for which finals keep k-
+- where the k- comes from:
+  - Taishanese (c-t=) vs Guangzhou onsets for the same characters
+  - whether k- characters more often have a velar-stop phonetic component
+  - k-/h- doublets within one character, and which form the vernacular words use
+  - in 梗/德/怗 finals, whether k- pairs with the literary rhyme and h- with
+    the colloquial one, as a literary/colloquial split would predict
 
 Writes data/derived/yue_xi.json.
 
@@ -22,9 +28,10 @@ import tempfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from ltcpron.chars import load_chars
+from ltcpron.chars import EXTRACTED, load_chars
 from ltcpron.lua import MODULES, Scribunto
 from ltcpron.predict import LtcPron
+from ltcpron.rules import colloquial_rules
 from ltcpron.words import load_tokens
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "derived"
@@ -52,6 +59,143 @@ def variant(tmp: Path, name: str, finals) -> LtcPron:
 def current_finals() -> set[int]:
     src = (MODULES / "ltc-pron" / "predict.lua").read_text()
     return {int(n) for n in re.findall(r"\[(\d+)\] = true", TABLE.search(src).group(2))}
+
+
+def stop_or_h(syllable: str) -> str | None:
+    """'k' for a k-/kw- syllable, 'h' for h-, f- and the glides h- gives (j-, w-, none)."""
+    onset = re.match(r"^([^aeiouy]*)", syllable).group(1)
+    if onset in K_SET:
+        return "k"
+    if onset in H_SET | {"j", "w", ""}:
+        return "h"
+    return None
+
+
+def taishanese_readings() -> dict[str, set[str]]:
+    out = defaultdict(set)
+    with open(EXTRACTED / "zh-pron.jsonl") as f:
+        for line in f:
+            rec = json.loads(line)
+            if len(rec["title"]) != 1:
+                continue
+            for t in rec["templates"]:
+                for alt in (t.get("c-t") or "").split(","):
+                    if re.fullmatch(r"[a-z]+[0-9]+", alt.strip()):
+                        out[rec["title"]].add(alt.strip())
+    return out
+
+
+def phonetic_components() -> dict[str, set[str]]:
+    out = {}
+    with open(EXTRACTED / "han.jsonl") as f:
+        for line in f:
+            rec = json.loads(line)
+            out[rec["char"]] = {
+                comp.get(k[1:], "").strip()
+                for comp in rec["compounds"] for k, v in comp.items()
+                if re.fullmatch(r"c\d+", k) and v.strip() == "p" and len(comp.get(k[1:], "").strip()) == 1
+            }
+    return out
+
+
+def origin_tests(p: LtcPron, chars, tokens) -> dict:
+    """Evidence on where 溪 k- comes from."""
+    single = [c for c in chars.values()
+              if len(c.mc) == 1 and c.mc[0][0] == "溪" and c.yue]
+
+    def gz_class(c):
+        found = {stop_or_h(y.base) for y in c.yue} - {None}
+        return next(iter(found)) if len(found) == 1 else None
+
+    # Taishanese vs Guangzhou
+    ts = taishanese_readings()
+    tais = Counter()
+    tais_ex = defaultdict(list)
+    for c in single:
+        g = gz_class(c)
+        t = {stop_or_h(s) for s in ts.get(c.char, ())} - {None}
+        if g and len(t) == 1:
+            key = f"{g}/{next(iter(t))}"
+            tais[key] += 1
+            tais_ex[key].append(c.char)
+
+    # Velar-stop phonetic component
+    phon = phonetic_components()
+    ph = {"k": [0, 0], "h": [0, 0]}
+    ph_ex = {"k": [], "h": []}
+    for c in single:
+        g = gz_class(c)
+        comps = [x for x in phon.get(c.char, ()) if x in chars and chars[x].yue]
+        if not g or not comps:
+            continue
+        onsets = {re.match(r"^([^aeiou]*)", y.base).group(1) for x in comps for y in chars[x].yue}
+        stop = bool(onsets & {"g", "gw", "k", "kw"})
+        ph[g][0] += 1
+        ph[g][1] += stop
+        if stop and len(ph_ex[g]) < 8:
+            ph_ex[g].append(f"{c.char}←{''.join(comps)}")
+
+    # Doublets within characters whose readings are all 溪
+    xi_only = [c for c in chars.values() if c.mc and c.yue and all(r[0] == "溪" for r in c.mc)]
+    counts = Counter()
+    doublets = []
+    for c in xi_only:
+        forms = defaultdict(set)
+        for y in {y.base for y in c.yue}:
+            cls = stop_or_h(y)
+            if cls:
+                forms[cls].add(y)
+        if forms["k"] and forms["h"]:
+            counts["both"] += 1
+            side = {}
+            for cls in "kh":
+                ts_ = [t for t in tokens.get(c.char, []) if t.reading.base in forms[cls]]
+                side[cls] = {"forms": sorted(forms[cls]), "words": len(ts_),
+                             "vernacular": sum(t.vernacular for t in ts_),
+                             "vernacular_words": sorted({t.word for t in ts_ if t.vernacular})[:3]}
+            if side["k"]["words"] and side["h"]["words"]:
+                sk = side["k"]["vernacular"] / side["k"]["words"]
+                sh = side["h"]["vernacular"] / side["h"]["words"]
+                verdict = "k" if sk > sh else "h" if sh > sk else "same"
+                counts[f"more vernacular: {verdict}"] += 1
+                doublets.append({"char": c.char, **side, "more_vernacular": verdict})
+        elif forms["k"]:
+            counts["k only"] += 1
+        elif forms["h"]:
+            counts["h only"] += 1
+
+    # Layering: onset vs rhyme layer in finals with a colloquial rhyme rule
+    layer = Counter()
+    layer_ex = defaultdict(list)
+    for c in chars.values():
+        if not (c.mc and c.yue):
+            continue
+        for r in c.mc:
+            if r[0] != "溪":
+                continue
+            cat = p.categories(r)
+            if not ({"geng2", "geng34", "de", "tie"} & set(colloquial_rules(cat))):
+                continue
+            lit = split_jp(p.yue(cat))
+            coll = split_jp(p.yue_coll(cat) or p.yue(cat))
+            for y in {y.base for y in c.yue}:
+                parts = split_jp(y)
+                cls = stop_or_h(y)
+                if not parts or not cls:
+                    continue
+                rhyme = ("literary" if parts[1] == lit[1]
+                         else "colloquial" if parts[1] == coll[1] else None)
+                if rhyme:
+                    layer[f"{cls}/{rhyme}"] += 1
+                    if len(layer_ex[f"{cls}/{rhyme}"]) < 10:
+                        layer_ex[f"{cls}/{rhyme}"].append(f"{c.char} {y}")
+
+    return {
+        "taishanese": dict(tais), "taishanese_examples": {k: v[:12] for k, v in tais_ex.items()},
+        "phonetic": ph, "phonetic_examples": ph_ex,
+        "doublet_counts": dict(counts), "doublets": doublets,
+        "layering": dict(layer), "layering_examples": dict(layer_ex),
+    }
 
 
 def onset_class(onset: str) -> str:
@@ -223,8 +367,18 @@ def main():
     for name, n in cov.items():
         print(f"  {name:48} {n}  ({n - cov['upstream: h- before every final']:+d} vs upstream)")
 
+    origin = origin_tests(p, chars, tokens)
+    print("\nWhere k- comes from:")
+    print("  Guangzhou/Taishanese onsets:", origin["taishanese"])
+    for cls in "kh":
+        n, s = origin["phonetic"][cls]
+        print(f"  Guangzhou {cls}- characters with a velar-stop phonetic: {s}/{n} ({s / max(1, n):.0%})")
+    print("  doublets:", origin["doublet_counts"])
+    print("  onset by rhyme layer:", origin["layering"])
+
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "yue_xi.json").write_text(json.dumps({
+        "origin": origin,
         "dist": {k: dict(v) for k, v in dist.items()}, "per_final": rows, "factors": factors,
         "register": reg, "register_words": {k: list(v) for k, v in reg_words.items()},
         "coverage": cov, "best": sorted(best), "kept_now": sorted(kept_now),
