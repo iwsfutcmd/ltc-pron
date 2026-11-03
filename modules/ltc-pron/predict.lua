@@ -1153,7 +1153,7 @@ local function yue_reflex(initial, final, tone, colloquial)
 		elseif final == 158 and final_result == "im" then
 			final_result = "Am"
 		-- 脂 after 心 only: 四 sei3, 死 sei2, 肆 sei3.
-		elseif final == 15 and initial == 16 and final_result == "i" then
+		elseif (final == 15 or final == 17) and initial == 16 and final_result == "i" then
 			final_result = "ei"
 		end
 	end

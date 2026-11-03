@@ -30,7 +30,7 @@ def colloquial_rules(cat) -> tuple[str, ...]:
         out.append("de")
     if cat.final == 158:
         out.append("tie")
-    if cat.final == 15 and cat.initial == 16:
+    if cat.final in (15, 17) and cat.initial == 16:
         out.append("zhi")
     if cat.tone == 2 and cat.initial in FULLY_VOICED:
         out.append("voiced_rising")
