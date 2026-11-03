@@ -87,6 +87,9 @@ p { margin: 14px 0 0; }
 .kicker { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); letter-spacing: 0.02em; margin: 0 0 14px; }
 .lede { font-size: 1.15rem; color: var(--ink-2); margin-top: 18px; }
 a { color: var(--lit); text-underline-offset: 2px; }
+/* Links to Wiktionary entries: quiet in running text, clear on hover and focus. */
+a.wk { color: inherit; text-decoration: underline; text-decoration-color: var(--muted); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a.wk:hover, a.wk:focus-visible { color: var(--lit); text-decoration-color: var(--lit); }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 
 code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
@@ -267,9 +270,9 @@ ol.questions h3 { margin: 0; font-size: 1.05rem; }
 <main>
 
 <header class="col">
-  <p class="kicker">Module:ltc-pron/predict · working notes · updated 2 November 2026</p>
+  <p class="kicker"><a class="wk" href="https://en.wiktionary.org/wiki/Module%3Altc-pron/predict">Module:ltc-pron/predict</a> · working notes · updated 2 November 2026</p>
   <h1>A colloquial layer for <code>predict_yue</code></h1>
-  <p class="lede">Wiktionary predicts one Cantonese reading for each Middle Chinese reading, and that reading is the literary one. These notes explain how the prediction is built, add a colloquial (白讀) layer as <code>predict_yue_coll</code>, fix four gaps in the literary layer, and test both against Wiktionary's attested readings and the words those readings occur in.</p>
+  <p class="lede">Wiktionary predicts one Cantonese reading for each Middle Chinese reading, and that reading is the literary one. These notes explain how the prediction is built, add a colloquial (白讀) layer as <code>predict_yue_coll</code>, fix four gaps in the literary layer, and test both against Wiktionary's attested readings and the words those readings occur in. Characters and words cited as examples link to their Wiktionary entries.</p>
 </header>
 
 <section class="wide">
@@ -299,11 +302,11 @@ ol.questions h3 { margin: 0; font-size: 1.05rem; }
 
 <section class="col">
   <h2>From a rhyme-book reading to numbers</h2>
-  <p>Every character with Middle Chinese data has a module, <code>Module:zh/data/ltc-pron/<span class="han">生</span></code>, holding one string per reading. Each string is a row of single characters, read by position:</p>
+  <p>Every character with Middle Chinese data has a module, <code><a class="wk" href="https://en.wiktionary.org/wiki/Module%3Azh/data/ltc-pron/%E7%94%9F">Module:zh/data/ltc-pron/生</a></code>, holding one string per reading. Each string is a row of single characters, read by position:</p>
 </section>
 <section class="wide">
   <div class="panel">
-    <h4>The first reading of <span class="han">生</span>: <span class="han mono">生庚二開 平所庚</span></h4>
+    <h4>The first reading of <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a></span>: <span class="han mono">生庚二開 平所庚</span></h4>
     <div class="anatomy" aria-label="Reading string fields">
       <div class="slot"><div class="glyph">生</div><div class="what"><b>initial</b>聲母 生 (s-)</div></div>
       <div class="slot"><div class="glyph">庚</div><div class="what"><b>final</b>韻 庚</div></div>
@@ -321,7 +324,7 @@ ol.questions h3 { margin: 0; font-size: 1.05rem; }
   </div>
 </section>
 <section class="col">
-  <p><code>infer_categories</code> in <code>Module:ltc-pron</code> reduces the string to three integers: one of 38 initials, one of 160 final types (final × division × openness, as far as each final distinguishes them), and a tone from 1 to 4. Both predictors, <code>predict_cmn</code> and <code>predict_yue</code>, take only those three numbers.</p>
+  <p><code>infer_categories</code> in <code><a class="wk" href="https://en.wiktionary.org/wiki/Module%3Altc-pron">Module:ltc-pron</a></code> reduces the string to three integers: one of 38 initials, one of 160 final types (final × division × openness, as far as each final distinguishes them), and a tone from 1 to 4. Both predictors, <code>predict_cmn</code> and <code>predict_yue</code>, take only those three numbers.</p>
 </section>
 
 <section class="col">
@@ -334,39 +337,39 @@ ol.questions h3 { margin: 0; font-size: 1.05rem; }
         <h3>Initial</h3>
         <p><code>initial_outcomes_yue</code> maps the 38 initials to Jyutping onsets. Overrides follow in priority order:</p>
         <ul>
-          <li>Labials become <code>f</code> before the 16 finals that caused 輕唇化 (e.g. <span class="han">分</span> fan1).</li>
-          <li>Voiced obstruents in the level tone devoice to aspirates: b→p, d→t, z→c, g→k (<span class="han">平</span> ping4).</li>
-          <li>溪 <code>k</code> becomes <code>h</code> before the 146 finals in <code>debuccalisation_inducing_yue</code> (<span class="han">客</span> hak1, <span class="han">開</span> hoi1). Several initials become <code>j</code> before front glides.</li>
+          <li>Labials become <code>f</code> before the 16 finals that caused 輕唇化 (e.g. <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%88%86#Chinese">分</a></span> fan1).</li>
+          <li>Voiced obstruents in the level tone devoice to aspirates: b→p, d→t, z→c, g→k (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B9%B3#Chinese">平</a></span> ping4).</li>
+          <li>溪 <code>k</code> becomes <code>h</code> before the 146 finals in <code>debuccalisation_inducing_yue</code> (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AE%A2#Chinese">客</a></span> hak1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8B#Chinese">開</a></span> hoi1). Several initials become <code>j</code> before front glides.</li>
         </ul>
-        <div class="hook litfix"><b>Literary fix.</b> Fourteen finals left the debuccalisation list, so 溪 keeps <code>k</code> there and the rounding rule in stage 3 gives <code>kw</code>: <span class="han">區</span> keoi1, <span class="han">困</span> kwan3, <span class="han">誇</span> kwaa1.</div>
-        <div class="hook"><b>Colloquial hook 1.</b> Devoicing to an aspirate also applies when a fully voiced initial meets the rising tone (全濁上), giving <span class="han">重</span> cung5 instead of zung6.</div>
+        <div class="hook litfix"><b>Literary fix.</b> Fourteen finals left the debuccalisation list, so 溪 keeps <code>k</code> there and the rounding rule in stage 3 gives <code>kw</code>: <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span> keoi1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a></span> kwan3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a></span> kwaa1.</div>
+        <div class="hook"><b>Colloquial hook 1.</b> Devoicing to an aspirate also applies when a fully voiced initial meets the rising tone (全濁上), giving <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%8D#Chinese">重</a></span> cung5 instead of zung6.</div>
       </div>
     </li>
     <li>
       <div>
         <h3>Rhyme</h3>
-        <p><code>final_class_yue</code> folds the 160 final types into 40 rhyme classes. Classes 1–20 have one outcome. Classes 21–34 have three outcomes, chosen by place of articulation (labial, coronal, velar/laryngeal). In 模 that gives <span class="han">布</span> bou3, <span class="han">都</span> dou1, <span class="han">古</span> gu2. Classes 35–40 have eight outcomes, one per initial class. Open 支脂之微 give <span class="han">比</span> bei2, <span class="han">地</span> dei6, <span class="han">知</span> zi1, <span class="han">子</span> zi2, <span class="han">機</span> gei1, <span class="han">衣</span> ji1. Seven special cases come first, e.g. 疑 + 模 gives the syllabic <span class="han">五</span> ng5.</p>
-        <div class="hook litfix"><b>Literary fixes.</b> Three of the seven special cases are new: 眞 after 來 and 精組 (<span class="han">鄰</span> leon4), 月合 and 乏 after voiced labials (<span class="han">罰</span> fat6), and 緝 after 從 and 邪 (<span class="han">集</span> zaap6).</div>
+        <p><code>final_class_yue</code> folds the 160 final types into 40 rhyme classes. Classes 1–20 have one outcome. Classes 21–34 have three outcomes, chosen by place of articulation (labial, coronal, velar/laryngeal). In 模 that gives <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B8%83#Chinese">布</a></span> bou3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%83%BD#Chinese">都</a></span> dou1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A4#Chinese">古</a></span> gu2. Classes 35–40 have eight outcomes, one per initial class. Open 支脂之微 give <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AF%94#Chinese">比</a></span> bei2, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9C%B0#Chinese">地</a></span> dei6, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%A5#Chinese">知</a></span> zi1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AD%90#Chinese">子</a></span> zi2, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A9%9F#Chinese">機</a></span> gei1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A1%A3#Chinese">衣</a></span> ji1. Seven special cases come first, e.g. 疑 + 模 gives the syllabic <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BA%94#Chinese">五</a></span> ng5.</p>
+        <div class="hook litfix"><b>Literary fixes.</b> Three of the seven special cases are new: 眞 after 來 and 精組 (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%84%B0#Chinese">鄰</a></span> leon4), 月合 and 乏 after voiced labials (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BD%B0#Chinese">罰</a></span> fat6), and 緝 after 從 and 邪 (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9B%86#Chinese">集</a></span> zaap6).</div>
       </div>
     </li>
     <li>
       <div>
         <h3>Onset adjustments from the rhyme</h3>
         <p>疑 <code>ng</code> becomes <code>j</code> before high vowels. Before the 60 rounded (合口) finals, <code>h</code> becomes <code>f</code>, a zero or <code>j</code> onset becomes <code>w</code>, and <code>g</code>/<code>k</code> become <code>gw</code>/<code>kw</code>, unless the rhyme vowel is already rounded.</p>
-        <div class="hook"><b>Colloquial hook 2.</b> After these adjustments, five rhyme replacements: 梗攝 II <code>aN</code>→<code>AN</code>, open 梗攝 III/IV <code>IN</code>→<code>eN</code>, 德 <code>aN</code>→<code>AN</code>, 怗 <code>im</code>→<code>Am</code>, and 脂 after 心 <code>i</code>→<code>ei</code>. Placing them here keeps 疑 as <code>j</code> before a former high vowel: <span class="han">迎</span> jing4 → jeng4.</div>
+        <div class="hook"><b>Colloquial hook 2.</b> After these adjustments, five rhyme replacements: 梗攝 II <code>aN</code>→<code>AN</code>, open 梗攝 III/IV <code>IN</code>→<code>eN</code>, 德 <code>aN</code>→<code>AN</code>, 怗 <code>im</code>→<code>Am</code>, and 脂 after 心 <code>i</code>→<code>ei</code>. Placing them here keeps 疑 as <code>j</code> before a former high vowel: <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%BF%8E#Chinese">迎</a></span> jing4 → jeng4.</div>
       </div>
     </li>
     <li>
       <div>
         <h3>Tone</h3>
         <p>The four Middle Chinese tones split by voicing. A voiceless entering tone splits again by vowel length: long vowels go to tone 3 (中入), short vowels to tone 1. Voiced entering is tone 6. A fully voiced initial in the rising tone moves to tone 6 (濁上變去). Other voiced syllables add 3 (陽平 4, 陽上 5, 陽去 6).</p>
-        <div class="hook"><b>Colloquial hook 3.</b> 全濁上 keeps 陽上 tone 5. The long-vowel test also counts <code>e</code>, so colloquial <span class="han">尺</span> comes out cek3. 德 is the exception: its lowered vowel keeps tone 1 (<span class="han">黑</span> haak1), so that rule sets a <code>short_entering</code> flag that skips the test.</div>
+        <div class="hook"><b>Colloquial hook 3.</b> 全濁上 keeps 陽上 tone 5. The long-vowel test also counts <code>e</code>, so colloquial <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B0%BA#Chinese">尺</a></span> comes out cek3. 德 is the exception: its lowered vowel keeps tone 1 (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%BB%91#Chinese">黑</a></span> haak1), so that rule sets a <code>short_entering</code> flag that skips the test.</div>
       </div>
     </li>
     <li>
       <div>
         <h3>Spell-out</h3>
-        <p><code>om</code> merges into <code>am</code>. Final <code>-m</code> becomes <code>-n</code> after labial onsets (<span class="han">凡</span> faan4). In the entering tone the nasal codas become stops (<code>-m -n -N</code> → <code>-p -t -k</code>). The internal letters are then spelled in Jyutping:</p>
+        <p><code>om</code> merges into <code>am</code>. Final <code>-m</code> becomes <code>-n</code> after labial onsets (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%87%A1#Chinese">凡</a></span> faan4). In the entering tone the nasal codas become stops (<code>-m -n -N</code> → <code>-p -t -k</code>). The internal letters are then spelled in Jyutping:</p>
       </div>
     </li>
   </ol>
@@ -388,7 +391,7 @@ ol.questions h3 { margin: 0; font-size: 1.05rem; }
     <p class="sub">Each cell shows the <span class="layer lit">literary</span> value, then the <span class="layer coll">colloquial</span> value where it differs.</p>
     <table class="trace" style="margin-top:12px">
       <thead>
-        <tr><th>Stage</th><th><span class="han">生</span> 生庚二開 平</th><th><span class="han">客</span> 溪庚二開 入</th><th><span class="han">重</span> 澄鍾三開 上</th></tr>
+        <tr><th>Stage</th><th><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a></span> 生庚二開 平</th><th><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AE%A2#Chinese">客</a></span> 溪庚二開 入</th><th><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%8D#Chinese">重</a></span> 澄鍾三開 上</th></tr>
       </thead>
       <tbody>
         <tr><td>Categories</td><td class="mono">21 · 109 · 1</td><td class="mono">29 · 113 · 4</td><td class="mono">11 · 7 · 2</td></tr>
@@ -465,12 +468,12 @@ end</span></pre>
       <h3>梗攝 II: <span class="mono">-ang/-ak</span> → <span class="mono">-aang/-aak</span></h3>
       <div class="cond">Finals 庚 陌 耕 麥, division II, open and closed.</div>
       <div class="examples">
-        <span class="ex"><span class="han">生</span><span class="from">sang1</span><span class="to">saang1</span></span>
-        <span class="ex"><span class="han">冷</span><span class="from">lang5</span><span class="to">laang5</span></span>
-        <span class="ex"><span class="han">坑</span><span class="from">hang1</span><span class="to">haang1</span></span>
-        <span class="ex"><span class="han">白</span><span class="from">bak6</span><span class="to">baak6</span></span>
-        <span class="ex"><span class="han">伯</span><span class="from">bak1</span><span class="to">baak3</span></span>
-        <span class="ex"><span class="han">客</span><span class="from">hak1</span><span class="to">haak3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a></span><span class="from">sang1</span><span class="to">saang1</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%86%B7#Chinese">冷</a></span><span class="from">lang5</span><span class="to">laang5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%91#Chinese">坑</a></span><span class="from">hang1</span><span class="to">haang1</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%99%BD#Chinese">白</a></span><span class="from">bak6</span><span class="to">baak6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BC%AF#Chinese">伯</a></span><span class="from">bak1</span><span class="to">baak3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AE%A2#Chinese">客</a></span><span class="from">hak1</span><span class="to">haak3</span></span>
       </div>
       <div class="stats">163 of 433 predicted forms attested (38%).</div>
     </div>
@@ -478,12 +481,12 @@ end</span></pre>
       <h3>全濁上: unaspirated tone 6 → aspirated tone 5</h3>
       <div class="cond">Fully voiced initials (並 定 澄 從 邪 崇 俟 常 船 羣 匣) in the rising tone. Fricatives change only the tone.</div>
       <div class="examples">
-        <span class="ex"><span class="han">重</span><span class="from">zung6</span><span class="to">cung5</span></span>
-        <span class="ex"><span class="han">舅</span><span class="from">gau6</span><span class="to">kau5</span></span>
-        <span class="ex"><span class="han">婢</span><span class="from">bei6</span><span class="to">pei5</span></span>
-        <span class="ex"><span class="han">似</span><span class="from">zi6</span><span class="to">ci5</span></span>
-        <span class="ex"><span class="han">市</span><span class="from">si6</span><span class="to">si5</span></span>
-        <span class="ex"><span class="han">旱</span><span class="from">hon6</span><span class="to">hon5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%8D#Chinese">重</a></span><span class="from">zung6</span><span class="to">cung5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%88%85#Chinese">舅</a></span><span class="from">gau6</span><span class="to">kau5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A9%A2#Chinese">婢</a></span><span class="from">bei6</span><span class="to">pei5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BC%BC#Chinese">似</a></span><span class="from">zi6</span><span class="to">ci5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B8%82#Chinese">市</a></span><span class="from">si6</span><span class="to">si5</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%97%B1#Chinese">旱</a></span><span class="from">hon6</span><span class="to">hon5</span></span>
       </div>
       <div class="stats">147 of 676 attested (22%).</div>
     </div>
@@ -491,12 +494,12 @@ end</span></pre>
       <h3>梗攝 III–IV, open: <span class="mono">-ing/-ik</span> → <span class="mono">-eng/-ek</span></h3>
       <div class="cond">Finals 庚 陌 (III) and 清 昔 青 錫, open only. Voiceless entering moves to tone 3.</div>
       <div class="examples">
-        <span class="ex"><span class="han">病</span><span class="from">bing6</span><span class="to">beng6</span></span>
-        <span class="ex"><span class="han">名</span><span class="from">ming4</span><span class="to">meng4</span></span>
-        <span class="ex"><span class="han">井</span><span class="from">zing2</span><span class="to">zeng2</span></span>
-        <span class="ex"><span class="han">尺</span><span class="from">cik1</span><span class="to">cek3</span></span>
-        <span class="ex"><span class="han">壁</span><span class="from">bik1</span><span class="to">bek3</span></span>
-        <span class="ex"><span class="han">石</span><span class="from">sik6</span><span class="to">sek6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%97%85#Chinese">病</a></span><span class="from">bing6</span><span class="to">beng6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%90%8D#Chinese">名</a></span><span class="from">ming4</span><span class="to">meng4</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BA%95#Chinese">井</a></span><span class="from">zing2</span><span class="to">zeng2</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B0%BA#Chinese">尺</a></span><span class="from">cik1</span><span class="to">cek3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A3%81#Chinese">壁</a></span><span class="from">bik1</span><span class="to">bek3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%B3#Chinese">石</a></span><span class="from">sik6</span><span class="to">sek6</span></span>
       </div>
       <div class="stats">75 of 731 attested (10%).</div>
     </div>
@@ -504,11 +507,11 @@ end</span></pre>
       <h3>德: <span class="mono">-ak</span> → <span class="mono">-aak</span><span class="new">new</span></h3>
       <div class="cond">德, the entering tone of 登, open. Voiceless syllables keep tone 1.</div>
       <div class="examples">
-        <span class="ex"><span class="han">黑</span><span class="from">hak1</span><span class="to">haak1</span></span>
-        <span class="ex"><span class="han">刻</span><span class="from">hak1</span><span class="to">haak1</span></span>
-        <span class="ex"><span class="han">克</span><span class="from">hak1</span><span class="to">haak1</span></span>
-        <span class="ex"><span class="han">肋</span><span class="from">lak6</span><span class="to">laak6</span></span>
-        <span class="ex"><span class="han">蔔</span><span class="from">bak6</span><span class="to">baak6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%BB%91#Chinese">黑</a></span><span class="from">hak1</span><span class="to">haak1</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%88%BB#Chinese">刻</a></span><span class="from">hak1</span><span class="to">haak1</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%85%8B#Chinese">克</a></span><span class="from">hak1</span><span class="to">haak1</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%82%8B#Chinese">肋</a></span><span class="from">lak6</span><span class="to">laak6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%94%94#Chinese">蔔</a></span><span class="from">bak6</span><span class="to">baak6</span></span>
       </div>
       <div class="stats">13 of 57 attested (23%).</div>
     </div>
@@ -516,21 +519,21 @@ end</span></pre>
       <h3>怗: <span class="mono">-ip</span> → <span class="mono">-aap</span><span class="new">new</span></h3>
       <div class="cond">怗, the entering tone of 添.</div>
       <div class="examples">
-        <span class="ex"><span class="han">疊</span><span class="from">dip6</span><span class="to">daap6</span></span>
-        <span class="ex"><span class="han">頰</span><span class="from">gip3</span><span class="to">gaap3</span></span>
-        <span class="ex"><span class="han">莢</span><span class="from">gip3</span><span class="to">gaap3</span></span>
-        <span class="ex"><span class="han">鋏</span><span class="from">gip3</span><span class="to">gaap3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%96%8A#Chinese">疊</a></span><span class="from">dip6</span><span class="to">daap6</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%A0%B0#Chinese">頰</a></span><span class="from">gip3</span><span class="to">gaap3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%8E%A2#Chinese">莢</a></span><span class="from">gip3</span><span class="to">gaap3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%8B%8F#Chinese">鋏</a></span><span class="from">gip3</span><span class="to">gaap3</span></span>
       </div>
       <div class="stats">9 of 71 attested (13%).</div>
     </div>
     <div class="rule">
       <h3>脂 after 心: <span class="mono">-i</span> → <span class="mono">-ei</span></h3>
-      <div class="cond">Open 脂 with the 心 initial. Other initials in this class already get <span class="mono">-ei</span> as their literary reflex (<span class="han">地</span> dei6, <span class="han">機</span> gei1).</div>
+      <div class="cond">Open 脂 with the 心 initial. Other initials in this class already get <span class="mono">-ei</span> as their literary reflex (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9C%B0#Chinese">地</a></span> dei6, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A9%9F#Chinese">機</a></span> gei1).</div>
       <div class="examples">
-        <span class="ex"><span class="han">四</span><span class="from">si3</span><span class="to">sei3</span></span>
-        <span class="ex"><span class="han">死</span><span class="from">si2</span><span class="to">sei2</span></span>
-        <span class="ex"><span class="han">肆</span><span class="from">si3</span><span class="to">sei3</span></span>
-        <span class="ex"><span class="han">泗</span><span class="from">si3</span><span class="to">sei3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%9B#Chinese">四</a></span><span class="from">si3</span><span class="to">sei3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AD%BB#Chinese">死</a></span><span class="from">si2</span><span class="to">sei2</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%82%86#Chinese">肆</a></span><span class="from">si3</span><span class="to">sei3</span></span>
+        <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%B3%97#Chinese">泗</a></span><span class="from">si3</span><span class="to">sei3</span></span>
       </div>
       <div class="stats">6 of 10 attested (60%).</div>
     </div>
@@ -539,7 +542,7 @@ end</span></pre>
 
 <section class="col">
   <h2>How many more readings match</h2>
-  <p>The test set is every character that has both Middle Chinese data and Cantonese readings (<code>c=</code> in <code>{{zh-pron}}</code>) on its own page: 12,681 characters with 17,595 distinct attested readings. A reading counts as matched if it equals the prediction for any of the character's Middle Chinese readings.</p>
+  <p>The test set is every character that has both Middle Chinese data and Cantonese readings (<code>c=</code> in <code><a class="wk" href="https://en.wiktionary.org/wiki/Template%3Azh-pron">{{zh-pron}}</a></code>) on its own page: 12,681 characters with 17,595 distinct attested readings. A reading counts as matched if it equals the prediction for any of the character's Middle Chinese readings.</p>
 </section>
 <section class="wide">
   <div class="panel">
@@ -608,7 +611,7 @@ end</span></pre>
   <p>Together, the literary fixes and the colloquial layer raise coverage from 62.7% to 66.0%: 159 readings from the fixes and 412 from the colloquial layer. The colloquial gain is modest because colloquial forms are lexical: most characters in a 梗攝 rhyme never developed a colloquial reading, so a low attestation rate is expected. The rate still separates the rules. 梗攝 II is attested for 38% of eligible characters, 梗攝 III–IV for only 10%.</p>
 
   <h2>Are these forms colloquial?</h2>
-  <p>Matching a reading says nothing about its register. For that, the readings were traced into words. Some 93,000 multi-character entries on Wiktionary have a Cantonese reading that aligns one syllable per character, giving 240,868 character tokens. An entry with a Cantonese reading but no Mandarin one is almost always Cantonese-specific vocabulary (<span class="han">生仔</span>, <span class="han">夜晚黑</span>); 7.4% of tokens are in such vernacular words.</p>
+  <p>Matching a reading says nothing about its register. For that, the readings were traced into words. Some 93,000 multi-character entries on Wiktionary have a Cantonese reading that aligns one syllable per character, giving 240,868 character tokens. An entry with a Cantonese reading but no Mandarin one is almost always Cantonese-specific vocabulary (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F%E4%BB%94#Chinese">生仔</a></span>, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A4%9C%E6%99%9A%E9%BB%91#Chinese">夜晚黑</a></span>); 7.4% of tokens are in such vernacular words.</p>
   <p>If a rule describes a colloquial layer, the words that use its form should be more vernacular than the words that use the literary form.</p>
 </section>
 <section class="wide">
@@ -693,15 +696,15 @@ end</span></pre>
   </div>
 </section>
 <section class="col">
-  <p>Every rule in <code>predict_yue_coll</code> passes: its forms sit in vernacular words between two and five and a half times as often as the literary forms. Counting characters rather than tokens, so that <span class="han">生</span>'s hundreds of words do not dominate, the colloquial form is the more vernacular one for 31 梗攝 III–IV characters against 7, for 12 against 4 in 梗攝 II, and for 11 against 4 under 全濁上. 德 passes on tokens (driven by <span class="han">黑</span>) but splits 2 to 3 by character, so it is the weakest of the six.</p>
-  <p>This settles the 全濁上 question. The tone-5 aspirates are the only reading for many characters (<span class="han">舅</span> kau5, <span class="han">婢</span> pei5), yet they behave as a colloquial layer: 10.0% vernacular against 3.9% for tone 6.</p>
-  <p>The rejected candidates fail the other way. 緝 -aap is the ordinary reading in learned words such as <span class="han">學習</span> and <span class="han">集中</span>, so after 從 and 邪 it became a literary fix instead. 豪 -aau is almost entirely one phonetic series (<span class="han">考 栲 洘 丂</span>), and 咍 -aai is scattered across initials (<span class="han">乃</span> naai5, <span class="han">孩</span> haai4, <span class="han">貸</span> taai3) with no conditioning. Four further candidates have too few word tokens to judge: 日 n- (<span class="han">餌</span> nei6), 疑 ng- (<span class="han">蟻</span> ngai5), 蕭宵 -eu (<span class="han">調</span> deu6) and 歌戈 -oe (<span class="han">多</span> doe1).</p>
+  <p>Every rule in <code>predict_yue_coll</code> passes: its forms sit in vernacular words between two and five and a half times as often as the literary forms. Counting characters rather than tokens, so that <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a></span>'s hundreds of words do not dominate, the colloquial form is the more vernacular one for 31 梗攝 III–IV characters against 7, for 12 against 4 in 梗攝 II, and for 11 against 4 under 全濁上. 德 passes on tokens (driven by <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%BB%91#Chinese">黑</a></span>) but splits 2 to 3 by character, so it is the weakest of the six.</p>
+  <p>This settles the 全濁上 question. The tone-5 aspirates are the only reading for many characters (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%88%85#Chinese">舅</a></span> kau5, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A9%A2#Chinese">婢</a></span> pei5), yet they behave as a colloquial layer: 10.0% vernacular against 3.9% for tone 6.</p>
+  <p>The rejected candidates fail the other way. 緝 -aap is the ordinary reading in learned words such as <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AD%B8%E7%BF%92#Chinese">學習</a></span> and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9B%86%E4%B8%AD#Chinese">集中</a></span>, so after 從 and 邪 it became a literary fix instead. 豪 -aau is almost entirely one phonetic series (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%80%83#Chinese">考</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%A0%B2#Chinese">栲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B4%98#Chinese">洘</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%B8%82#Chinese">丂</a></span>), and 咍 -aai is scattered across initials (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%B9%83#Chinese">乃</a></span> naai5, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AD%A9#Chinese">孩</a></span> haai4, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%B2%B8#Chinese">貸</a></span> taai3) with no conditioning. Four further candidates have too few word tokens to judge: 日 n- (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%A4%8C#Chinese">餌</a></span> nei6), 疑 ng- (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%9F%BB#Chinese">蟻</a></span> ngai5), 蕭宵 -eu (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%BF#Chinese">調</a></span> deu6) and 歌戈 -oe (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A4%9A#Chinese">多</a></span> doe1).</p>
 </section>
 
 <section class="col" id="stacking">
   <h2>When two rules meet one reading</h2>
-  <p>Each colloquial rule changes one part of the syllable. The 梗攝 rules change the rhyme (<span class="mono">-ing → -eng</span>, <span class="mono">-ang → -aang</span>). The 全濁上 rule changes the onset and tone (unaspirated tone 6 → aspirated tone 5). Most readings meet the conditions of at most one rule, but a 梗攝 syllable with a fully voiced initial in the rising tone meets both. <span class="han">挺</span> is one: 定 initial, 青 final, rising tone.</p>
-  <p><code>predict_yue_coll</code> applies every rule whose conditions a reading meets, so for <span class="han">挺</span> it changes the rhyme <em>and</em> the onset and tone, and returns teng5. That is what "stacking" means here. It treats the colloquial layer as one package: a word that entered Cantonese through the colloquial layer should show every colloquial change its syllable is eligible for. The alternative is that the changes are independent, so a word can have the colloquial rhyme without the colloquial tone, or the other way round.</p>
+  <p>Each colloquial rule changes one part of the syllable. The 梗攝 rules change the rhyme (<span class="mono">-ing → -eng</span>, <span class="mono">-ang → -aang</span>). The 全濁上 rule changes the onset and tone (unaspirated tone 6 → aspirated tone 5). Most readings meet the conditions of at most one rule, but a 梗攝 syllable with a fully voiced initial in the rising tone meets both. <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%BA#Chinese">挺</a></span> is one: 定 initial, 青 final, rising tone.</p>
+  <p><code>predict_yue_coll</code> applies every rule whose conditions a reading meets, so for <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%BA#Chinese">挺</a></span> it changes the rhyme <em>and</em> the onset and tone, and returns teng5. That is what "stacking" means here. It treats the colloquial layer as one package: a word that entered Cantonese through the colloquial layer should show every colloquial change its syllable is eligible for. The alternative is that the changes are independent, so a word can have the colloquial rhyme without the colloquial tone, or the other way round.</p>
   <p>Laying out both choices for one reading gives four possible forms, and the attested readings show which of them occur:</p>
 </section>
 <section class="wide">
@@ -712,7 +715,7 @@ end</span></pre>
   </div>
   <div class="grids">
     <div class="g2-card">
-      <h4><span class="han">挺</span> 定青四開 上 <small>also ting2, ting4</small></h4>
+      <h4><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%BA#Chinese">挺</a></span> 定青四開 上 <small>also ting2, ting4</small></h4>
       <div class="g2">
         <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
         <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell att"><span class="f">ting5</span><span class="who">tone only</span></div>
@@ -720,7 +723,7 @@ end</span></pre>
       </div>
     </div>
     <div class="g2-card">
-      <h4><span class="han">艇</span> 定青四開 上</h4>
+      <h4><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%89%87#Chinese">艇</a></span> 定青四開 上</h4>
       <div class="g2">
         <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
         <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell att"><span class="f">ting5</span><span class="who">tone only</span></div>
@@ -728,7 +731,7 @@ end</span></pre>
       </div>
     </div>
     <div class="g2-card">
-      <h4><span class="han">訂</span> 定青四開 上 <small>also deng3, ding3</small></h4>
+      <h4><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A8%82#Chinese">訂</a></span> 定青四開 上 <small>also deng3, ding3</small></h4>
       <div class="g2">
         <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
         <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell"><span class="f">ting5</span><span class="who">tone only</span></div>
@@ -736,7 +739,7 @@ end</span></pre>
       </div>
     </div>
     <div class="g2-card">
-      <h4><span class="han">靜</span> 從清三開 上</h4>
+      <h4><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9D%9C#Chinese">靜</a></span> 從清三開 上</h4>
       <div class="g2">
         <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
         <div class="rh">-ing</div><div class="cell att"><span class="f">zing6</span><span class="who">predict_yue</span></div><div class="cell"><span class="f">cing5</span><span class="who">tone only</span></div>
@@ -751,10 +754,10 @@ end</span></pre>
     <table style="margin-top:12px">
       <thead><tr><th>Form</th><th class="num">Readings attesting it</th><th class="num">Word tokens</th><th>Characters</th></tr></thead>
       <tbody>
-        <tr><td><span class="layer lit">literary (neither change)</span></td><td class="num">15</td><td class="num">200</td><td><span class="han">靜 靖 婧 妌 竫 杏 幸 倖 荇 莕 㼬 澋 痙 並 阱</span></td></tr>
-        <tr><td><span class="layer coll">tone only</span></td><td class="num">7</td><td class="num">17</td><td><span class="han">挺 梃 娗 涏 誔 鋌 艇</span>, all ting5</td></tr>
-        <tr><td><span class="layer coll">rhyme only</span></td><td class="num">2</td><td class="num">22</td><td><span class="han">訂</span> deng6, <span class="han">阱</span> zeng6</td></tr>
-        <tr><td><span class="layer coll">stacked (current output)</span></td><td class="num">1</td><td class="num">34</td><td><span class="han">艇</span> teng5</td></tr>
+        <tr><td><span class="layer lit">literary (neither change)</span></td><td class="num">15</td><td class="num">200</td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9D%9C#Chinese">靜</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9D%96#Chinese">靖</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A9%A7#Chinese">婧</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A6%8C#Chinese">妌</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AB%AB#Chinese">竫</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%9D%8F#Chinese">杏</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B9%B8#Chinese">幸</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%80%96#Chinese">倖</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8D%87#Chinese">荇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8E%95#Chinese">莕</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%BC%AC#Chinese">㼬</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%BE%8B#Chinese">澋</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%97%99#Chinese">痙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%B8%A6#Chinese">並</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%98%B1#Chinese">阱</a></span></td></tr>
+        <tr><td><span class="layer coll">tone only</span></td><td class="num">7</td><td class="num">17</td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%BA#Chinese">挺</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%A2%83#Chinese">梃</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A8%97#Chinese">娗</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B6%8F#Chinese">涏</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%94#Chinese">誔</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%8B%8C#Chinese">鋌</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%89%87#Chinese">艇</a></span>, all ting5</td></tr>
+        <tr><td><span class="layer coll">rhyme only</span></td><td class="num">2</td><td class="num">22</td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A8%82#Chinese">訂</a></span> deng6, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%98%B1#Chinese">阱</a></span> zeng6</td></tr>
+        <tr><td><span class="layer coll">stacked (current output)</span></td><td class="num">1</td><td class="num">34</td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%89%87#Chinese">艇</a></span> teng5</td></tr>
       </tbody>
     </table>
   </div>
@@ -763,8 +766,8 @@ end</span></pre>
   <p>The table answers less than it seems to, for three reasons.</p>
   <ul>
     <li><b>Most of these readings have no colloquial form at all.</b> 15 of the 23 attest only the literary reading, and 17 of the 40 attest none of the four.</li>
-    <li><b>The "tone only" evidence is one phonetic series.</b> All seven characters are written with <span class="han">廷</span>, which is itself a level-tone syllable with a regular aspirate (<span class="han">廷 庭</span> ting4). Their ting5 may copy that aspirate by analogy rather than reflect the 全濁上 layer.</li>
-    <li><b>The single-layer and stacked forms that do occur are ordinary readings, not vernacular ones.</b> <span class="han">艇</span> teng5 is the word for boat in every register (<span class="han">遊艇 潛艇 救生艇</span>), and <span class="han">訂</span> deng6 is the everyday reading in <span class="han">訂單 預訂</span>.</li>
+    <li><b>The "tone only" evidence is one phonetic series.</b> All seven characters are written with <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BB%B7#Chinese">廷</a></span>, which is itself a level-tone syllable with a regular aspirate (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BB%B7#Chinese">廷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%BA%AD#Chinese">庭</a></span> ting4). Their ting5 may copy that aspirate by analogy rather than reflect the 全濁上 layer.</li>
+    <li><b>The single-layer and stacked forms that do occur are ordinary readings, not vernacular ones.</b> <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%89%87#Chinese">艇</a></span> teng5 is the word for boat in every register (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%81%8A%E8%89%87#Chinese">遊艇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%BD%9B%E8%89%87#Chinese">潛艇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%95%91%E7%94%9F%E8%89%87#Chinese">救生艇</a></span>), and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A8%82#Chinese">訂</a></span> deng6 is the everyday reading in <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A8%82%E5%96%AE#Chinese">訂單</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%A0%90%E8%A8%82#Chinese">預訂</a></span>.</li>
   </ul>
   <p>Coverage barely depends on the choice:</p>
 </section>
@@ -793,10 +796,10 @@ end</span></pre>
     <table>
       <thead><tr><th>Fix</th><th>Examples</th><th class="num">Gained</th><th class="num">Lost</th></tr></thead>
       <tbody>
-        <tr><td>眞 after 來, and after 精組 outside 入: <span class="mono">-an/-at → -eon/-eot</span><span class="note">來 gives -eon/-eot in 32 of 33 attested readings</span></td><td><span class="han">鄰</span> leon4 · <span class="han">進</span> zeon3 · <span class="han">秦</span> ceon4 · <span class="han">栗</span> leot6</td><td class="num">61</td><td class="num">5<span class="note">辛 新 薪 親, one phonetic series</span></td></tr>
-        <tr><td>溪 keeps <span class="mono">k-</span>, or <span class="mono">kw-</span> when rounded, before 14 finals<span class="note">finals where k/kw outnumber h/f at least 2:1</span></td><td><span class="han">區</span> keoi1 · <span class="han">困</span> kwan3 · <span class="han">誇</span> kwaa1 · <span class="han">扣</span> kau3 · <span class="han">確</span> kok3</td><td class="num">88</td><td class="num">3<span class="note">口 hau2, 殼 hok3, 𤘘</span></td></tr>
-        <tr><td>月合 and 乏 after voiced labials: <span class="mono">-aat → -at</span><span class="note">voiceless 發 法 faat3 unchanged</span></td><td><span class="han">罰</span> fat6 · <span class="han">伐</span> fat6 · <span class="han">襪</span> mat6 · <span class="han">乏</span> fat6</td><td class="num">12</td><td class="num">2<span class="note">襪 韈 maat6; both still match mat6</span></td></tr>
-        <tr><td>緝 after 從 and 邪: <span class="mono">-ap → -aap</span><span class="note">8 of 10 attested readings</span></td><td><span class="han">集</span> zaap6 · <span class="han">習</span> zaap6 · <span class="han">襲</span> zaap6</td><td class="num">11</td><td class="num">3<span class="note">習 襲 霫 zap6; 習 and 襲 still match zaap6</span></td></tr>
+        <tr><td>眞 after 來, and after 精組 outside 入: <span class="mono">-an/-at → -eon/-eot</span><span class="note">來 gives -eon/-eot in 32 of 33 attested readings</span></td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%84%B0#Chinese">鄰</a></span> leon4 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%80%B2#Chinese">進</a></span> zeon3 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A7%A6#Chinese">秦</a></span> ceon4 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A0%97#Chinese">栗</a></span> leot6</td><td class="num">61</td><td class="num">5<span class="note"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%BE%9B#Chinese">辛</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%96%B0#Chinese">新</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%96%AA#Chinese">薪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A6%AA#Chinese">親</a></span>, one phonetic series</span></td></tr>
+        <tr><td>溪 keeps <span class="mono">k-</span>, or <span class="mono">kw-</span> when rounded, before 14 finals<span class="note">finals where k/kw outnumber h/f at least 2:1</span></td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span> keoi1 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a></span> kwan3 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a></span> kwaa1 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%89%A3#Chinese">扣</a></span> kau3 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A2%BA#Chinese">確</a></span> kok3</td><td class="num">88</td><td class="num">3<span class="note"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A3#Chinese">口</a></span> hau2, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AE%BC#Chinese">殼</a></span> hok3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%F0%A4%98%98#Chinese">𤘘</a></span></span></td></tr>
+        <tr><td>月合 and 乏 after voiced labials: <span class="mono">-aat → -at</span><span class="note">voiceless <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%99%BC#Chinese">發</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B3%95#Chinese">法</a></span> faat3 unchanged</span></td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BD%B0#Chinese">罰</a></span> fat6 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BC%90#Chinese">伐</a></span> fat6 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A5%AA#Chinese">襪</a></span> mat6 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%B9%8F#Chinese">乏</a></span> fat6</td><td class="num">12</td><td class="num">2<span class="note"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A5%AA#Chinese">襪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9F%88#Chinese">韈</a></span> maat6; both still match mat6</span></td></tr>
+        <tr><td>緝 after 從 and 邪: <span class="mono">-ap → -aap</span><span class="note">8 of 10 attested readings</span></td><td><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9B%86#Chinese">集</a></span> zaap6 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BF%92#Chinese">習</a></span> zaap6 · <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A5%B2#Chinese">襲</a></span> zaap6</td><td class="num">11</td><td class="num">3<span class="note"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BF%92#Chinese">習</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A5%B2#Chinese">襲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9C%AB#Chinese">霫</a></span> zap6; <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BF%92#Chinese">習</a></span> and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A5%B2#Chinese">襲</a></span> still match zaap6</span></td></tr>
         <tr class="total"><td>372 MC readings change prediction</td><td>literary coverage 62.71% → 63.61%</td><td class="num">172</td><td class="num">13</td></tr>
       </tbody>
     </table>
@@ -816,7 +819,7 @@ end</span></pre>
 		final_result = "Am"</span></pre>
 </section>
 <section class="col">
-  <p>The 溪 fix is different in kind from the other three. Its fourteen finals were chosen from the data (麻二合 <span class="han">誇</span>, 唐合 <span class="han">曠</span>, 魂 <span class="han">困</span>, 齊 <span class="han">溪 奎</span>, 支脂合 <span class="han">虧</span>, 虞合 <span class="han">區</span>, 清合 <span class="han">傾</span>, 侯 <span class="han">扣</span>, 覺 <span class="han">確</span>, 鐸 <span class="han">恪 廓</span>, 鎋), so it describes which words kept the stop, not a sound law. 桓 after 明 was checked and left alone: <span class="han">滿</span> mun5 and <span class="han">漫</span> maan6 split 12 to 6 with no conditioning.</p>
+  <p>The 溪 fix is different in kind from the other three. Its fourteen finals were chosen from the data (麻二合 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a></span>, 唐合 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9B%A0#Chinese">曠</a></span>, 魂 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a></span>, 齊 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%AA#Chinese">溪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A5%8E#Chinese">奎</a></span>, 支脂合 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%99%A7#Chinese">虧</a></span>, 虞合 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span>, 清合 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%82%BE#Chinese">傾</a></span>, 侯 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%89%A3#Chinese">扣</a></span>, 覺 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A2%BA#Chinese">確</a></span>, 鐸 <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%AA#Chinese">恪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%BB%93#Chinese">廓</a></span>, 鎋), so it describes which words kept the stop, not a sound law. 桓 after 明 was checked and left alone: <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BB%BF#Chinese">滿</a></span> mun5 and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BC%AB#Chinese">漫</a></span> maan6 split 12 to 6 with no conditioning.</p>
 
   <h2>What is still unmatched</h2>
   <p>5,990 attested readings (34.0%) match neither layer. Each was compared with the nearest prediction, after first checking whether it copies the reading of the character's phonetic component.</p>
@@ -835,10 +838,10 @@ end</span></pre>
   </div>
 </section>
 <section class="col">
-  <p>Rare means the character appears in fewer than three multi-character Wiktionary entries; 59% of the misses are in such characters, where readings by analogy and dictionary-only readings are common. Among common characters the remaining patterns look sporadic. 見 is aspirated in 53 of them (<span class="han">溝</span> kau1, <span class="han">購</span> kau3, <span class="han">給</span> kap1, <span class="han">禁</span> kam3), and 溪 still keeps k- in 35 outside the fixed finals (<span class="han">曲</span> kuk1, <span class="han">缺</span> kyut3, <span class="han">企</span> kei5). 書, 常 and 心 sometimes affricate (<span class="han">設</span> cit3, <span class="han">始</span> ci2, <span class="han">匙</span> ci4). Tone mismatches spread thinly: no single tone change within one Middle Chinese tone and voicing class covers more than 45 common characters, which fits changed tones and word-specific readings better than a missing rule.</p>
+  <p>Rare means the character appears in fewer than three multi-character Wiktionary entries; 59% of the misses are in such characters, where readings by analogy and dictionary-only readings are common. Among common characters the remaining patterns look sporadic. 見 is aspirated in 53 of them (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%9D#Chinese">溝</a></span> kau1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%B3%BC#Chinese">購</a></span> kau3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%B5%A6#Chinese">給</a></span> kap1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A6%81#Chinese">禁</a></span> kam3), and 溪 still keeps k- in 35 outside the fixed finals (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9B%B2#Chinese">曲</a></span> kuk1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BC%BA#Chinese">缺</a></span> kyut3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%BC%81#Chinese">企</a></span> kei5). 書, 常 and 心 sometimes affricate (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%A8%AD#Chinese">設</a></span> cit3, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A7%8B#Chinese">始</a></span> ci2, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8C%99#Chinese">匙</a></span> ci4). Tone mismatches spread thinly: no single tone change within one Middle Chinese tone and voicing class covers more than 45 common characters, which fits changed tones and word-specific readings better than a missing rule.</p>
 
   <h3>What Wiktionary's own labels say</h3>
-  <p>A <code>c_note</code> on <code>{{zh-pron}}</code> sometimes labels Cantonese readings, as on <span class="han">生</span>: <code>saang1 - colloquial; sang1 - literary</code>. Only 136 characters carry such labels, too few to learn from but enough to check against.</p>
+  <p>A <code>c_note</code> on <code><a class="wk" href="https://en.wiktionary.org/wiki/Template%3Azh-pron">{{zh-pron}}</a></code> sometimes labels Cantonese readings, as on <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a></span>: <code>saang1 - colloquial; sang1 - literary</code>. Only 136 characters carry such labels, too few to learn from but enough to check against.</p>
 </section>
 <section class="wide">
   <div class="panel scroll">
@@ -852,7 +855,7 @@ end</span></pre>
   </div>
 </section>
 <section class="col">
-  <p>The 7 "colloquial" readings that the literary layer predicts mostly come from a <em>different</em> Middle Chinese reading of the same character. <span class="han">車</span> ce1 (colloquial) and geoi1 (literary) descend from two separate 廣韻 readings, and the module already predicts both, so Wiktionary's label there marks a reading split, not a stratum. The 2 literary-labelled readings caught by the colloquial layer are <span class="han">舵</span> to5 and <span class="han">喫</span> hek3, forms of our colloquial type that serve as the ordinary reading.</p>
+  <p>The 7 "colloquial" readings that the literary layer predicts mostly come from a <em>different</em> Middle Chinese reading of the same character. <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%BB%8A#Chinese">車</a></span> ce1 (colloquial) and geoi1 (literary) descend from two separate 廣韻 readings, and the module already predicts both, so Wiktionary's label there marks a reading split, not a stratum. The 2 literary-labelled readings caught by the colloquial layer are <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%88%B5#Chinese">舵</a></span> to5 and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%96%AB#Chinese">喫</a></span> hek3, forms of our colloquial type that serve as the ordinary reading.</p>
 </section>
 
 <section class="col">
@@ -868,7 +871,7 @@ end</span></pre>
     </li>
     <li>
       <h3>Is the 溪 list fit for upstream?</h3>
-      <p>It gains 88 readings for 3 lost, but it records which words kept k-, and it costs <span class="han">口</span> hau2. A per-character override in the data modules might suit Wiktionary better than a list of finals.</p>
+      <p>It gains 88 readings for 3 lost, but it records which words kept k-, and it costs <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A3#Chinese">口</a></span> hau2. A per-character override in the data modules might suit Wiktionary better than a list of finals.</p>
     </li>
     <li>
       <h3>Can the thin candidates be tested another way?</h3>
@@ -879,8 +882,8 @@ end</span></pre>
 
 <section class="col">
   <h2>How this was measured</h2>
-  <p>The Lua modules run unchanged under Lua 5.1 (the version Scribunto uses) through lupa, with a small stand-in for <code>mw.ustring</code> and <code>mw.text</code> written in Python. Lua's own patterns match bytes, so the stand-in translates patterns to Python regular expressions and matches whole characters. Before any change, the local output was compared with what Wiktionary renders for <span class="han">生 重 白 石 四 坐 話 吃</span> and agreed on every reading.</p>
-  <p>Data comes from the enwiktionary dump of 1 November 2026: 19,843 characters with Middle Chinese modules, 183,342 pages with <code>{{zh-pron}}</code>, 42,088 single-character pages with component data, and 1,027 dial-pron modules. Module data is evaluated in an empty Lua environment, so it can only build tables. Every change to <code>predict.lua</code> was measured with <code>scripts/yue_compare.py</code> and committed separately; the diff against the live module is now 83 lines added and 19 removed.</p>
+  <p>The Lua modules run unchanged under Lua 5.1 (the version Scribunto uses) through lupa, with a small stand-in for <code>mw.ustring</code> and <code>mw.text</code> written in Python. Lua's own patterns match bytes, so the stand-in translates patterns to Python regular expressions and matches whole characters. Before any change, the local output was compared with what Wiktionary renders for <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%8D#Chinese">重</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%99%BD#Chinese">白</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%B3#Chinese">石</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%9B#Chinese">四</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%90#Chinese">坐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A9%B1#Chinese">話</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%90%83#Chinese">吃</a></span> and agreed on every reading.</p>
+  <p>Data comes from the enwiktionary dump of 1 November 2026: 19,843 characters with Middle Chinese modules, 183,342 pages with <code><a class="wk" href="https://en.wiktionary.org/wiki/Template%3Azh-pron">{{zh-pron}}</a></code>, 42,088 single-character pages with component data, and 1,027 dial-pron modules. Module data is evaluated in an empty Lua environment, so it can only build tables. Every change to <code>predict.lua</code> was measured with <code>scripts/yue_compare.py</code> and committed separately; the diff against the live module is now 83 lines added and 19 removed.</p>
   <div class="files">
     <div><code>modules/ltc-pron/predict.lua</code><span>working copy with the fixes and <code>predict_yue_coll</code></span></div>
     <div><code>ltcpron/lua.py</code><span>Scribunto stand-in on lupa</span></div>
