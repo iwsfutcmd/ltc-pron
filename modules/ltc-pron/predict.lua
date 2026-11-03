@@ -1132,6 +1132,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 		initial_result = "k"
 	end
 
+	-- nor any wak: 或 惑 劃 waak6
+	if initial_result == "w" and tone == 4 and final_result == "aN" then
+		final_result = "AN"
+	end
+
 	-- set where a colloquial rime lengthens the vowel but keeps the 陰入 tone 1
 	local short_entering = false
 
