@@ -1080,6 +1080,10 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif (final == 68 or final == 148) and (initial == 3 or initial == 4) then
 		final_result = "an"
 
+	-- 緝 after 從 and 邪 has a long vowel: 集 習 襲 zaap6
+	elseif final == 141 and (initial == 15 or initial == 17) then
+		final_result = "Am"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
