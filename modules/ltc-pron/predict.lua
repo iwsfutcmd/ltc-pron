@@ -1101,6 +1101,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif final == 41 and initial <= 4 then
 		final_result = "ui"
 
+	-- rounded 佳 gives -aa, as in Mandarin guà, huà, where rounded 皆 keeps
+	-- -aai (乖 怪 gwaai): 卦 掛 gwaa3, 畫 waa6
+	elseif final == 32 then
+		final_result = "A"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
