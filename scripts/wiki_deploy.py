@@ -39,6 +39,7 @@ move pages") in .env:
 """
 
 import argparse
+import html
 import os
 import shutil
 import subprocess
@@ -46,6 +47,7 @@ import sys
 import tempfile
 import webbrowser
 from pathlib import Path
+from string import Template
 from urllib.parse import quote
 
 import requests
@@ -223,8 +225,153 @@ def copy_to_clipboard(text: str) -> bool:
     return False
 
 
-def edit_url(title: str) -> str:
-    return f"https://en.wiktionary.org/w/index.php?title={quote(title, safe=':/')}&action=edit"
+def edit_url(title: str, summary: str | None = None) -> str:
+    url = f"https://en.wiktionary.org/w/index.php?title={quote(title, safe=':/')}&action=edit"
+    return url + (f"&summary={quote(summary, safe='')}" if summary else "")
+
+
+def view_url(title: str) -> str:
+    return f"https://en.wiktionary.org/wiki/{quote(title, safe=':/')}"
+
+
+DEPLOY_PAGE = Template('''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy ltc-pron to Wiktionary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow column of numbered steps; each step is a card with its two actions. */
+:root {
+  color-scheme: light;
+  --paper: #f7f8f9; --surface: #ffffff; --ink: #15181d; --ink-2: #4a505a;
+  --muted: #737983; --rule: #dfe2e6; --accent: #3348a8; --accent-ink: #ffffff;
+  --done: #006300; --code-bg: #f0f2f4;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0f1114; --surface: #15171b; --ink: #e9ebee; --ink-2: #b4b9c2;
+    --muted: #8a909a; --rule: #2a2e35; --accent: #6d84e0; --accent-ink: #0f1114;
+    --done: #0ca30c; --code-bg: #1b1e23;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0f1114; --surface: #15171b; --ink: #e9ebee; --ink-2: #b4b9c2;
+  --muted: #8a909a; --rule: #2a2e35; --accent: #6d84e0; --accent-ink: #0f1114;
+  --done: #0ca30c; --code-bg: #1b1e23;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+main { max-width: 760px; margin: 0 auto; padding: 40px 20px 72px; }
+h1 { font-size: 1.7rem; font-weight: 600; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-2); margin: 10px 0 0; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+ol.steps { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 14px; counter-reset: step; }
+ol.steps > li { counter-increment: step; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; display: grid; grid-template-columns: 34px 1fr; gap: 0 14px; }
+ol.steps > li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--rule); display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; }
+.title { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; word-break: break-all; }
+.meta { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+.btn { font: inherit; font-size: 0.92rem; font-weight: 500; border-radius: 6px; padding: 7px 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); }
+.btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+.btn.secondary:hover { border-color: var(--ink-2); }
+.status { font-size: 0.85rem; color: var(--done); min-height: 1.2em; }
+.status.warn { color: var(--ink-2); }
+details { margin-top: 12px; }
+summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+textarea { width: 100%; height: 260px; margin-top: 8px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5; background: var(--code-bg); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; resize: vertical; }
+.final { margin-top: 22px; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0; }
+.final p { margin: 6px 0 0; color: var(--ink-2); font-size: 0.92rem; }
+.summary-line { margin-top: 18px; font-size: 0.88rem; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Deploy ltc-pron to Wiktionary</h1>
+  <p class="lede">Userspace copies for <b>$user</b>, built from <a href="$commit_url">$commit_label</a>. For each page in order: copy its contents, open its edit page, replace the whole edit box with what you copied, and save. The edit summary is already filled in.</p>
+  <ol class="steps">
+$steps
+  </ol>
+  <div class="final">
+    <a class="btn primary" href="$test_url">Open the test page</a>
+    <p>It renders the Middle Chinese table for $test_pages, each under a heading that links to the live entry.</p>
+  </div>
+  <p class="summary-line">Edit summary used: <code>$summary</code></p>
+</main>
+<script>
+document.querySelectorAll("[data-copy]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    var step = button.closest("li");
+    var area = step.querySelector("textarea");
+    var status = step.querySelector(".status");
+    function copied() {
+      status.className = "status";
+      status.textContent = "Copied " + area.value.split("\\n").length + " lines";
+    }
+    function fallback() {
+      step.querySelector("details").open = true;
+      area.focus();
+      area.select();
+      status.className = "status warn";
+      status.textContent = "Clipboard blocked: the text is selected below, press Ctrl+C";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(area.value).then(copied, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+</script>
+</body>
+</html>
+''')
+
+DEPLOY_STEP = Template('''    <li>
+      <div>
+        <div class="title">$title</div>
+        <div class="meta">$lines lines · <code>$file</code></div>
+        <div class="actions">
+          <button class="btn primary" type="button" data-copy>Copy contents</button>
+          <a class="btn secondary" href="$edit_url">Open edit page</a>
+          <span class="status" aria-live="polite"></span>
+        </div>
+        <details>
+          <summary>Show contents</summary>
+          <textarea id="src-$n" readonly aria-label="Contents of $title">
+$text</textarea>
+        </details>
+      </div>
+    </li>''')
+
+
+def deploy_page(user: str, built: dict[str, str], names: dict[str, str], summary: str,
+                commit_url: str, pages: list[str]) -> str:
+    steps = "\n".join(
+        DEPLOY_STEP.substitute(
+            n=i, title=html.escape(title), lines=text.count("\n") + 1,
+            file=f"build/userspace/{names[title]}", edit_url=html.escape(edit_url(title, summary)),
+            text=html.escape(text),
+        )
+        for i, (title, text) in enumerate(built.items(), 1)
+    )
+    return DEPLOY_PAGE.substitute(
+        user=html.escape(user), steps=steps, summary=html.escape(summary),
+        commit_url=html.escape(commit_url), commit_label=html.escape(commit_url.rsplit("/", 1)[-1]),
+        test_url=html.escape(view_url(f"User:{user}/ltc-pron")),
+        test_pages=html.escape(" ".join(pages)),
+    )
 
 
 def file_names(built: dict[str, str]) -> dict[str, str]:
@@ -269,6 +416,8 @@ def main():
     names = file_names(built)
     for title, text in built.items():
         (BUILD / names[title]).write_text(text)
+    commit_url = ver.split(" ", 1)[0]
+    (BUILD / "index.html").write_text(deploy_page(user, built, names, summary, commit_url, args.pages))
 
     if args.upload:
         password = os.environ.get("WIKTIONARY_BOT_PASSWORD")
@@ -280,6 +429,7 @@ def main():
         print(f"Test page: https://en.wiktionary.org/wiki/User:{user}/ltc-pron")
         return
 
+    print(f"\nDeploy page with copy buttons and edit links: {BUILD / 'index.html'}")
     print(f"\nBuilt {len(built)} pages in {BUILD.relative_to(ROOT)}. Paste each over the whole")
     print(f"edit box, in this order, with the edit summary:\n  {summary}\n")
     for title in built:
