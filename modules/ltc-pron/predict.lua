@@ -1097,6 +1097,10 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif final == 63 and (initial == 31 or initial == 34) then
 		final_result = "An"
 
+	-- 咍 after labials: Cantonese has no boi, poi or moi. 倍 蓓 pui5
+	elseif final == 41 and initial <= 4 then
+		final_result = "ui"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
