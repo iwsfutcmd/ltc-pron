@@ -1081,6 +1081,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif (final == 22 or final == 24) and initial == 4 then
 		final_result = "ou"
 
+	-- 眞 after 來 and, outside 入聲, after 精組: 鄰 leon4, 慄 leot6, 進 zeon3, 秦 ceon4
+	elseif (final == 43 or final == 48) and initial == 37
+		or final == 43 and initial >= 13 and initial <= 17 then
+		final_result = "En"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
