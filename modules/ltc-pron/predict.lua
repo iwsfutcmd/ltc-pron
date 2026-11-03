@@ -857,7 +857,8 @@ local glide_inducing_yue = {
 
 -- 溪 becomes h- (f- when rounded) before these finals. 尤, 侵 and 緝 (136,
 -- 139-142) are left out so that the j- rule in predict_yue applies to them:
--- 丘 jau1, 欽 jam1, 泣 jap1.
+-- 丘 jau1, 欽 jam1, 泣 jap1. Open 藥 (107) is left out because Cantonese has
+-- no hoek, so 溪 keeps its stop: 卻 koek3.
 local debuccalisation_inducing_yue = {
     [1] = true,
     [2] = true,
@@ -965,7 +966,6 @@ local debuccalisation_inducing_yue = {
     [104] = true,
     [105] = true,
     [106] = true,
-    [107] = true,
     [108] = true,
     [109] = true,
     [110] = true,
