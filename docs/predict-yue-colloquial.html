@@ -245,8 +245,8 @@ pre .addlit { display: block; background: var(--lit-wash); margin: 0 -18px; padd
 .mct { font-size: 0.85rem; }
 .mct th, .mct td { border: 1px solid var(--rule); text-align: center; padding: 5px 8px; vertical-align: middle; }
 .mct th { background: var(--paper); color: var(--ink-2); font-weight: 500; text-align: left; width: 11em; font-size: 0.78rem; line-height: 1.3; }
-.mct tr.newrow th, .mct tr.newrow td { background: var(--coll-wash); }
-.mct tr.newrow th { color: var(--ink); font-weight: 600; }
+.mct tr.changed th, .mct tr.changed td { background: var(--coll-wash); }
+.mct tr.changed th { color: var(--ink); font-weight: 600; }
 .mct .han { font-size: 1rem; }
 
 /* Open questions */
@@ -470,7 +470,7 @@ end</span></pre>
 
 <section class="col">
   <h3>In the Middle Chinese table</h3>
-  <p><code><a class="wk" href="https://en.wiktionary.org/wiki/Module:ltc-pron">Module:ltc-pron</a></code> shows the colloquial reflex as one extra row, under the existing Cantonese one. Each reading gets at most one form, and a cell stays blank where the colloquial reflex matches the literary one. Pages where no reading has a colloquial reflex, such as <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9D%B1#Chinese">東</a></span>, get no extra row at all. These are the last rows of the table as the working copy renders them:</p>
+  <p><code><a class="wk" href="https://en.wiktionary.org/wiki/Module:ltc-pron">Module:ltc-pron</a></code> shows the colloquial reflex in the existing Cantonese row, after the literary reflex and a slash, with a “colloquial” tooltip on hover. Each reading gets at most one colloquial form, and readings without one show only the literary form, so pages such as <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9D%B1#Chinese">東</a></span> look exactly as before. These are the last rows of the table as the working copy renders them:</p>
 </section>
 <section class="wide">
   <div class="mctables">
@@ -482,8 +482,7 @@ end</span></pre>
           <tr><th>Reading #</th><td>1/2</td><td>2/2</td><td>1/1</td></tr>
           <tr><th>Tone</th><td>Level</td><td>Departing</td><td>Departing</td></tr>
           <tr><th>Expected Mandarin Reflex</th><td>shēng</td><td>shèng</td><td>bìng</td></tr>
-          <tr><th>Expected Cantonese Reflex</th><td>sang<sup>1</sup></td><td>sang<sup>3</sup></td><td>bing<sup>6</sup></td></tr>
-          <tr class="newrow"><th>Expected Colloquial Cantonese Reflex</th><td>saang<sup>1</sup></td><td>saang<sup>3</sup></td><td>beng<sup>6</sup></td></tr>
+          <tr class="changed"><th>Expected Cantonese Reflex</th><td>sang<sup>1</sup> / <span title="colloquial">saang<sup>1</sup></span></td><td>sang<sup>3</sup> / <span title="colloquial">saang<sup>3</sup></span></td><td>bing<sup>6</sup> / <span title="colloquial">beng<sup>6</sup></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -495,15 +494,14 @@ end</span></pre>
           <tr><th>Reading #</th><td>1/3</td><td>2/3</td><td>3/3</td></tr>
           <tr><th>Tone</th><td>Level</td><td>Rising</td><td>Departing</td></tr>
           <tr><th>Expected Mandarin Reflex</th><td>chóng</td><td>zhòng</td><td>zhòng</td></tr>
-          <tr><th>Expected Cantonese Reflex</th><td>cung<sup>4</sup></td><td>zung<sup>6</sup></td><td>zung<sup>6</sup></td></tr>
-          <tr class="newrow"><th>Expected Colloquial Cantonese Reflex</th><td></td><td>cung<sup>5</sup></td><td></td></tr>
+          <tr class="changed"><th>Expected Cantonese Reflex</th><td>cung<sup>4</sup></td><td>zung<sup>6</sup> / <span title="colloquial">cung<sup>5</sup></span></td><td>zung<sup>6</sup></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 <section class="col">
-  <p>Rendered against the live modules, the only other changes to the table are the Cantonese cells that the literary fixes correct (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%84%B0#Chinese">鄰</a></span> lan4 → leon4, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span> heoi1 → keoi1) and the table's collapse-toggle id, which the module derives from the row contents.</p>
+  <p>Rendered against the live modules, the only other changes to the table are the Cantonese cells that the literary fixes correct (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%84%B0#Chinese">鄰</a></span> lan4 → leon4, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span> heoi1 → keoi1) and, on pages whose rows change, the table's collapse-toggle id, which the module derives from the row contents.</p>
   <p>3,044 of the 25,609 Middle Chinese readings get a distinct colloquial form. Each rule card below gives the Middle Chinese condition, a sample of attested pairs, and how often the rule's output is attested among characters that have Cantonese readings on Wiktionary.</p>
 </section>
 <section class="wide">
@@ -927,10 +925,10 @@ end</span></pre>
 <section class="col">
   <h2>How this was measured</h2>
   <p>The Lua modules run unchanged under Lua 5.1 (the version Scribunto uses) through lupa, with a small stand-in for <code>mw.ustring</code> and <code>mw.text</code> written in Python. Lua's own patterns match bytes, so the stand-in translates patterns to Python regular expressions and matches whole characters. Before any change, the local output was compared with what Wiktionary renders for <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%94%9F#Chinese">生</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%8D#Chinese">重</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%99%BD#Chinese">白</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%B3#Chinese">石</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%9B#Chinese">四</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%90#Chinese">坐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A9%B1#Chinese">話</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%90%83#Chinese">吃</a></span> and agreed on every reading.</p>
-  <p>Data comes from the enwiktionary dump of 1 November 2026: 19,843 characters with Middle Chinese modules, 183,342 pages with <code><a class="wk" href="https://en.wiktionary.org/wiki/Template%3Azh-pron">{{zh-pron}}</a></code>, 42,088 single-character pages with component data, and 1,027 dial-pron modules. Module data is evaluated in an empty Lua environment, so it can only build tables. Every change to <code>predict.lua</code> was measured with <code>scripts/yue_compare.py</code> and committed separately. Together with the new table row in <code>Module:ltc-pron</code>, the diff against the live modules is 91 lines added and 21 removed.</p>
+  <p>Data comes from the enwiktionary dump of 1 November 2026: 19,843 characters with Middle Chinese modules, 183,342 pages with <code><a class="wk" href="https://en.wiktionary.org/wiki/Template%3Azh-pron">{{zh-pron}}</a></code>, 42,088 single-character pages with component data, and 1,027 dial-pron modules. Module data is evaluated in an empty Lua environment, so it can only build tables. Every change to <code>predict.lua</code> was measured with <code>scripts/yue_compare.py</code> and committed separately. Together with the change to the Cantonese cell in <code>Module:ltc-pron</code>, the diff against the live modules is 90 lines added and 20 removed.</p>
   <div class="files">
     <div><code>modules/ltc-pron/predict.lua</code><span>working copy with the fixes and <code>predict_yue_coll</code></span></div>
-    <div><code>modules/ltc-pron.lua</code><span>working copy with the colloquial table row</span></div>
+    <div><code>modules/ltc-pron.lua</code><span>working copy showing the colloquial reflex in the Cantonese row</span></div>
     <div><code>scripts/ltc_table.py</code><span>renders the Middle Chinese table for any page locally</span></div>
     <div><code>ltcpron/lua.py</code><span>Scribunto stand-in on lupa</span></div>
     <div><code>ltcpron/dump.py</code><span>dump extraction</span></div>
