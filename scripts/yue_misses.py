@@ -29,13 +29,12 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from ltcpron.chars import EXTRACTED, load_chars
+from ltcpron.chars import EXTRACTED, load_chars, load_components
 from ltcpron.predict import LtcPron
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "derived"
 
 JYUTPING = re.compile(r"^(gw|kw|ng|[bpmfdtnlgkhwzcsj])?([a-z]+)([1-6])$")
-IDS_OPERATORS = re.compile(r"[⿰-⿿㇯？?]")
 
 FULLY_VOICED = {3, 7, 11, 15, 17, 20, 22, 25, 27, 30, 33}
 SONORANT = {4, 8, 12, 31, 35, 36, 37, 38}
@@ -54,31 +53,6 @@ def voicing(initial: int) -> str:
     if initial in SONORANT:
         return "sonorant"
     return "voiceless"
-
-
-def load_components():
-    """char -> (phonetic components, IDS components)."""
-    out = {}
-    path = EXTRACTED / "han.jsonl"
-    if not path.exists():
-        return out
-    with open(path) as f:
-        for line in f:
-            rec = json.loads(line)
-            phon = set()
-            for comp in rec["compounds"]:
-                for k, v in comp.items():
-                    if re.fullmatch(r"c\d+", k) and v.strip() == "p":
-                        part = comp.get(k[1:], "").strip()
-                        if len(part) == 1:
-                            phon.add(part)
-            ids = set()
-            for s in rec["ids"]:
-                # IDS strings also hold placeholders (A, K, ？); keep only CJK.
-                ids.update(ch for ch in IDS_OPERATORS.sub("", s)
-                           if ch != rec["char"] and ch.isalpha() and ord(ch) > 0x2E7F)
-            out[rec["char"]] = (phon, ids)
-    return out
 
 
 def word_counts():

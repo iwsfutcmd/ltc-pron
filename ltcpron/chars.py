@@ -1,6 +1,7 @@
 """Join extracted MC readings, Cantonese readings and dial-pron data by character."""
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -9,6 +10,7 @@ from .yue import YueReading, note_labels, readings
 EXTRACTED = Path(__file__).resolve().parent.parent / "data" / "extracted"
 
 GUANGZHOU = 31  # 0-based column in Module:zh/data/dial-pron rows
+IDS_OPERATORS = re.compile(r"[⿰-⿿㇯？?]")
 
 
 @dataclass
@@ -75,3 +77,28 @@ def load_chars() -> dict[str, Char]:
                 c.gz.extend(cols[GUANGZHOU].split("|"))
 
     return chars
+
+
+def load_components():
+    """char -> (phonetic components, IDS components)."""
+    out = {}
+    path = EXTRACTED / "han.jsonl"
+    if not path.exists():
+        return out
+    with open(path) as f:
+        for line in f:
+            rec = json.loads(line)
+            phon = set()
+            for comp in rec["compounds"]:
+                for k, v in comp.items():
+                    if re.fullmatch(r"c\d+", k) and v.strip() == "p":
+                        part = comp.get(k[1:], "").strip()
+                        if len(part) == 1:
+                            phon.add(part)
+            ids = set()
+            for s in rec["ids"]:
+                # IDS strings also hold placeholders (A, K, ？); keep only CJK.
+                ids.update(ch for ch in IDS_OPERATORS.sub("", s)
+                           if ch != rec["char"] and ch.isalpha() and ord(ch) > 0x2E7F)
+            out[rec["char"]] = (phon, ids)
+    return out
