@@ -776,15 +776,19 @@ end</span></pre>
     <table>
       <thead><tr><th>What <code>predict_yue_coll</code> returns for these readings</th><th class="num">Attested readings matched</th><th class="num">vs current</th></tr></thead>
       <tbody>
-        <tr><td>The stacked form (current)</td><td class="num">11,605 · 65.96%</td><td class="num">–</td></tr>
-        <tr><td>One form per layer: rhyme only and tone only</td><td class="num">11,613 · 66.00%</td><td class="num">+8</td></tr>
-        <tr><td>All three: rhyme only, tone only and stacked</td><td class="num">11,614 · 66.01%</td><td class="num">+9</td></tr>
+        <tr><td><b>The stacked form (current, kept)</b></td><td class="num">11,605 · 65.96%</td><td class="num">–</td></tr>
+        <tr><td>The rhyme-only form</td><td class="num">11,606 · 65.96%</td><td class="num">+1</td></tr>
+        <tr><td>The tone-only form<span class="note">all six extra readings are the 廷 series</span></td><td class="num">11,611 · 65.99%</td><td class="num">+6</td></tr>
+        <tr><td>No colloquial form</td><td class="num">11,604 · 65.95%</td><td class="num">−1</td></tr>
+        <tr><td>Two forms, rhyme only and tone only<span class="note">ruled out: more than one colloquial form in a table cell</span></td><td class="num">11,613 · 66.00%</td><td class="num">+8</td></tr>
+        <tr><td>Three forms, adding the stacked one<span class="note">ruled out for the same reason</span></td><td class="num">11,614 · 66.01%</td><td class="num">+9</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 <section class="col">
-  <p>So the data neither shows the layers stacking nor shows them independent; it mostly shows that these 53 readings stay literary. The decision can be made on how the result is displayed. One string fits the existing "Expected Cantonese Reflex" cell in the Middle Chinese table. Returning one form per layer would match 8 more readings, but the table would then need room for two colloquial forms in the few cells where both rules apply.</p>
+  <p>So the data neither shows the layers stacking nor shows them independent; it mostly shows that these 53 readings stay literary. That leaves the decision to the display, and the Middle Chinese table should not fill up with alternative readings: <code>predict_yue_coll</code> returns at most one form per Middle Chinese reading.</p>
+  <p><b>Decision: keep the stacked form.</b> Among single forms, only the tone-only choice does better, by 6 readings that all come from the <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BB%B7#Chinese">廷</a></span> series and may be analogy. The stacked form needs no code change and keeps the colloquial form defined simply: every colloquial change the syllable is eligible for.</p>
 </section>
 
 <section class="col">
@@ -861,10 +865,6 @@ end</span></pre>
 <section class="col">
   <h2>Open questions</h2>
   <ol class="questions">
-    <li>
-      <h3>One colloquial form, or one per layer?</h3>
-      <p>For the 53 readings where a 梗攝 rule and 全濁上 both apply, <code>predict_yue_coll</code> returns the stacked form. Returning the rhyme-only and tone-only forms instead matches 8 more readings, but the evidence is one phonetic series and three characters (see <a href="#stacking">When two rules meet one reading</a>). The choice can follow what the Middle Chinese table can display.</p>
-    </li>
     <li>
       <h3>Should -aang/-aak be the default in 梗攝 II?</h3>
       <p>In words, -aang/-aak tokens outnumber -ang/-ak 2,974 to 2,250, and 48 characters use only the colloquial form. In voiceless entering syllables, literary <span class="mono">-ak</span> is attested 9 times and <span class="mono">-aak</span> 59 times. The "colloquial" form is the commoner one here.</p>

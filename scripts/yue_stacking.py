@@ -93,6 +93,9 @@ def main():
     # Coverage under each option for what predict_yue_coll returns on overlaps.
     options = {
         "stacked (current)": ("stacked",),
+        "rhyme layer only": ("rhyme only",),
+        "tone layer only": ("tone only",),
+        "no colloquial form": (),
         "one form per layer": ("rhyme only", "tone only"),
         "per layer + stacked": ("rhyme only", "tone only", "stacked"),
     }
