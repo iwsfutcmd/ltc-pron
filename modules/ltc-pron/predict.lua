@@ -1119,6 +1119,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 		end
 	end
 
+	-- Cantonese has no gyut or gut, so 見 is aspirated there: 決 訣 蕨 kyut3, 括 kut3
+	if initial == 28 and tone == 4 and (final_result == "Yn" or final_result == "un") then
+		initial_result = "k"
+	end
+
 	-- set where a colloquial rime lengthens the vowel but keeps the 陰入 tone 1
 	local short_entering = false
 
