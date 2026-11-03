@@ -105,6 +105,18 @@ def main():
                 forms[x["char"]].add(x["k"] if x["final"] in keep else x["h"])
             return sum(len({y.base for y in chars[ch].yue} & f) for ch, f in forms.items())
 
+        def full_coverage(pp: LtcPron) -> int:
+            return sum(len({y.base for y in c.yue} & {pp.yue(pp.categories(r)) for r in c.mc})
+                       for c in chars.values() if c.mc and c.yue)
+
+        # The module's 溪 -> j- rule (尤, 侵, 緝: 丘 jau1, 欽 jam1, 泣 jap1) sits after the
+        # h- test, so it only fires for finals missing from the debuccalisation list.
+        j_finals = {136, 139, 140, 141, 142}
+        j_cov = {
+            "upstream + j- rule": full_coverage(variant(Path(tmp), "hj", set(range(1, 161)) - j_finals)),
+            "current + j- rule": full_coverage(variant(Path(tmp), "cj", current_finals() - j_finals)),
+        }
+
     single = [x for x in xi if len(chars[x["char"]].mc) == 1]
     print(f"溪 readings on characters with Cantonese readings: {len(xi)} "
           f"({len(single)} on single-reading characters)")
@@ -206,6 +218,7 @@ def main():
         "k- before every final": set(range(1, 161)),
     }
     cov = {name: coverage(keep) for name, keep in policies.items()}
+    cov.update(j_cov)
     print("\nLiterary coverage (attested readings matched):")
     for name, n in cov.items():
         print(f"  {name:48} {n}  ({n - cov['upstream: h- before every final']:+d} vs upstream)")
