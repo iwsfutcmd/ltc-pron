@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colloquial Cantonese in ltc-pron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one reading column (~68ch); tables, code and charts may widen to 960px.
+   Two semantic hues run through the whole page: literary (ink blue) and colloquial (vermilion). */
+:root {
+  color-scheme: light;
+  --paper: #f7f8f9;
+  --surface: #ffffff;
+  --ink: #15181d;
+  --ink-2: #4a505a;
+  --muted: #737983;
+  --rule: #dfe2e6;
+  --lit: #3348a8;
+  --coll: #c4410f;
+  --lit-wash: #e7ebf7;
+  --coll-wash: #f9e4da;
+  --rest: #e3e5e8;
+  --code-bg: #f0f2f4;
+  --focus: #3348a8;
+  --font-display: "Newsreader", "Noto Serif TC", Georgia, serif;
+  --font-body: "IBM Plex Sans", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-han: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0f1114;
+    --surface: #15171b;
+    --ink: #e9ebee;
+    --ink-2: #b4b9c2;
+    --muted: #8a909a;
+    --rule: #2a2e35;
+    --lit: #6d84e0;
+    --coll: #e0703a;
+    --lit-wash: #1d2335;
+    --coll-wash: #33201a;
+    --rest: #2a2d33;
+    --code-bg: #1b1e23;
+    --focus: #8fa3f0;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0f1114;
+  --surface: #15171b;
+  --ink: #e9ebee;
+  --ink-2: #b4b9c2;
+  --muted: #8a909a;
+  --rule: #2a2e35;
+  --lit: #6d84e0;
+  --coll: #e0703a;
+  --lit-wash: #1d2335;
+  --coll-wash: #33201a;
+  --rest: #2a2d33;
+  --code-bg: #1b1e23;
+  --focus: #8fa3f0;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.6;
+}
+main { padding: 48px 20px 96px; }
+.col { max-width: 68ch; margin: 0 auto; }
+.wide { max-width: 960px; margin: 0 auto; }
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2.6rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--rule); }
+h3 { font-size: 1.2rem; margin-top: 32px; font-family: var(--font-body); font-weight: 600; }
+p { margin: 14px 0 0; }
+.kicker { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); letter-spacing: 0.02em; margin: 0 0 14px; }
+.lede { font-size: 1.15rem; color: var(--ink-2); margin-top: 18px; }
+a { color: var(--lit); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+:not(pre) > code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+.han { font-family: var(--font-han); }
+.jp { font-family: var(--font-mono); font-size: 0.9em; }
+.jp.lit { color: var(--ink); }
+.jp.coll { color: var(--ink); font-weight: 500; }
+
+/* Layer markers: a coloured dot carries identity; text stays in ink. */
+.layer { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.layer::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
+.layer.lit::before { background: var(--lit); }
+.layer.coll::before { background: var(--coll); }
+
+/* Stat tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 32px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px 18px; }
+.tile .label { font-size: 0.85rem; color: var(--ink-2); }
+.tile .value { font-size: 1.9rem; font-weight: 600; margin-top: 4px; line-height: 1.15; }
+.tile .value small { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.tile .note { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+/* Panels hold charts, tables and code */
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 20px 22px; margin-top: 24px; }
+.panel h4 { margin: 0; font-size: 0.95rem; font-weight: 600; }
+.panel .sub { margin: 4px 0 0; font-size: 0.85rem; color: var(--ink-2); }
+.scroll { overflow-x: auto; }
+
+/* Reading-string anatomy */
+.anatomy { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.slot { display: grid; justify-items: center; gap: 6px; min-width: 64px; }
+.slot .glyph { font-family: var(--font-han); font-size: 1.9rem; line-height: 1; width: 100%; text-align: center; padding: 12px 10px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; }
+.slot .glyph.blank { color: var(--muted); font-family: var(--font-mono); font-size: 1rem; padding: 21px 10px; }
+.slot .what { font-size: 0.78rem; color: var(--ink-2); text-align: center; line-height: 1.3; }
+.slot .what b { display: block; color: var(--ink); font-weight: 600; }
+.arrow-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; font-size: 0.95rem; }
+.arrow-row .box { font-family: var(--font-mono); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; }
+.arrow-row .to { color: var(--muted); }
+
+/* Pipeline */
+ol.stages { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px; counter-reset: stage; }
+ol.stages > li { counter-increment: stage; display: grid; grid-template-columns: 36px 1fr; gap: 0 14px; }
+ol.stages > li::before { content: counter(stage); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--rule); background: var(--surface); display: grid; place-items: center; margin-top: 2px; }
+ol.stages h3 { margin: 4px 0 0; font-size: 1.05rem; }
+ol.stages p { margin-top: 6px; }
+.hook { margin-top: 10px; border-left: 3px solid var(--coll); background: var(--coll-wash); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 0.92rem; }
+.hook b { font-weight: 600; }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; color: var(--ink-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr:last-child td { border-bottom: 0; }
+.trace td:first-child { color: var(--ink-2); white-space: nowrap; }
+.trace .pair { display: grid; gap: 2px; }
+.trace .pair span { display: flex; align-items: baseline; gap: 6px; }
+.trace tr.result td { font-weight: 600; }
+
+/* Notation chips */
+.notation { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 14px; }
+.notation div { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; }
+.notation code { background: none; padding: 0; font-weight: 500; }
+
+/* Code */
+pre { margin: 16px 0 0; background: var(--code-bg); border-radius: 8px; padding: 16px 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; }
+pre .c { color: var(--muted); }
+pre .add { display: block; background: var(--coll-wash); margin: 0 -18px; padding: 0 18px; }
+
+/* Rule cards */
+.rules { display: grid; gap: 14px; margin-top: 24px; }
+.rule { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--coll); border-radius: 0 8px 8px 0; padding: 16px 20px; }
+.rule h3 { margin: 0; font-size: 1.05rem; }
+.rule .cond { font-size: 0.88rem; color: var(--ink-2); margin-top: 4px; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 12px; }
+.ex { display: inline-flex; align-items: baseline; gap: 6px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 3px 9px; font-size: 0.88rem; }
+.ex .han { font-size: 1.05rem; }
+.ex .from { color: var(--muted); font-family: var(--font-mono); font-size: 0.82rem; text-decoration: line-through; text-decoration-color: var(--muted); }
+.ex .to { font-family: var(--font-mono); font-size: 0.85rem; }
+.rule .stats { margin-top: 10px; font-size: 0.85rem; color: var(--ink-2); }
+
+/* Coverage stacked bar */
+.stack { display: flex; gap: 2px; height: 24px; margin-top: 18px; }
+.stack > div { height: 100%; }
+.stack > div:first-child { border-radius: 0; }
+.stack > div:last-child { border-radius: 0 4px 4px 0; }
+.seg-lit { background: var(--lit); }
+.seg-coll { background: var(--coll); }
+.seg-none { background: var(--rest); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; font-size: 0.88rem; }
+.legend .item { display: flex; align-items: baseline; gap: 8px; }
+.legend .sw { width: 10px; height: 10px; border-radius: 2px; flex: none; transform: translateY(1px); }
+.legend .v { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+
+/* Per-rule meter chart */
+.meters { display: grid; gap: 12px; margin-top: 18px; }
+.m-row { display: grid; grid-template-columns: 190px 1fr 132px; gap: 14px; align-items: center; border-radius: 4px; }
+.m-label { font-size: 0.88rem; line-height: 1.3; }
+.m-label span { display: block; font-size: 0.78rem; color: var(--muted); font-family: var(--font-mono); }
+.m-scale { position: relative; height: 20px; }
+.m-bar { display: flex; gap: 2px; height: 20px; }
+.m-bar .fill { background: var(--coll); }
+.m-bar .rest { background: var(--coll-wash); }
+.m-bar > :last-child { border-radius: 0 4px 4px 0; }
+.m-value { font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.m-value b { color: var(--ink); font-weight: 600; }
+.m-axis { display: grid; grid-template-columns: 190px 1fr 132px; gap: 14px; margin-top: 6px; }
+.m-axis .ticks { position: relative; height: 16px; border-top: 1px solid var(--rule); font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.m-axis .ticks span { position: absolute; top: 3px; transform: translateX(-50%); }
+.m-axis .ticks span:first-child { transform: none; }
+
+/* Open questions */
+ol.questions { padding-left: 1.4em; margin: 18px 0 0; }
+ol.questions > li { margin-top: 18px; padding-left: 4px; }
+ol.questions > li::marker { font-family: var(--font-mono); color: var(--muted); }
+ol.questions h3 { margin: 0; font-size: 1.05rem; }
+
+.files { display: grid; gap: 6px; margin-top: 14px; font-size: 0.9rem; }
+.files div { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 12px; }
+.files code { background: none; padding: 0; }
+
+/* Tooltip */
+#tip { position: fixed; z-index: 10; pointer-events: none; max-width: 280px; background: var(--ink); color: var(--paper); font-size: 0.8rem; line-height: 1.45; padding: 7px 10px; border-radius: 6px; opacity: 0; transition: opacity 0.12s; }
+#tip.on { opacity: 1; }
+[data-tip] { cursor: default; }
+@media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+
+@media (max-width: 640px) {
+  main { padding-top: 32px; }
+  h1 { font-size: 2rem; }
+  .m-row, .m-axis { grid-template-columns: 1fr; gap: 6px; }
+  .m-axis > :first-child, .m-axis > :last-child { display: none; }
+  .files div { grid-template-columns: 1fr; gap: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="col">
+  <p class="kicker">Module:ltc-pron/predict · working notes · 2 November 2026</p>
+  <h1>A colloquial layer for <code style="font-size:0.85em;background:none;padding:0">predict_yue</code></h1>
+  <p class="lede">Wiktionary predicts one Cantonese reading for each Middle Chinese reading, and that reading is the literary one. This page explains how that prediction is built, describes a new <code>predict_yue_coll</code> that adds the colloquial (白讀) layer, and measures how many more of Wiktionary's attested readings it accounts for.</p>
+</header>
+
+<section class="wide">
+  <div class="tiles">
+    <div class="tile">
+      <div class="label">Attested readings matched</div>
+      <div class="value">64.9% <small>from 62.7%</small></div>
+      <div class="note">literary + colloquial, vs literary alone</div>
+    </div>
+    <div class="tile">
+      <div class="label">Extra readings matched</div>
+      <div class="value">+392</div>
+      <div class="note">of 17,595 attested; +3.6% relative</div>
+    </div>
+    <div class="tile">
+      <div class="label">Characters fully explained</div>
+      <div class="value">7,916 <small>from 7,657</small></div>
+      <div class="note">every attested reading predicted</div>
+    </div>
+    <div class="tile">
+      <div class="label">Change to literary output</div>
+      <div class="value">0</div>
+      <div class="note">across all 25,609 MC readings</div>
+    </div>
+  </div>
+</section>
+
+<section class="col">
+  <h2>From a rhyme-book reading to numbers</h2>
+  <p>Every character with Middle Chinese data has a module, <code>Module:zh/data/ltc-pron/<span class="han">生</span></code>, holding one string per reading. Each string is a row of single characters, read by position:</p>
+</section>
+<section class="wide">
+  <div class="panel">
+    <h4>The first reading of <span class="han">生</span>: <span class="han mono">生庚二開 平所庚</span></h4>
+    <div class="anatomy" aria-label="Reading string fields">
+      <div class="slot"><div class="glyph">生</div><div class="what"><b>initial</b>聲母 生 (s-)</div></div>
+      <div class="slot"><div class="glyph">庚</div><div class="what"><b>final</b>韻 庚</div></div>
+      <div class="slot"><div class="glyph">二</div><div class="what"><b>division</b>等 II</div></div>
+      <div class="slot"><div class="glyph">開</div><div class="what"><b>openness</b>開 open</div></div>
+      <div class="slot"><div class="glyph blank">␣</div><div class="what"><b>攝 slot</b>blank in all 25,609</div></div>
+      <div class="slot"><div class="glyph">平</div><div class="what"><b>tone</b>平 level</div></div>
+      <div class="slot"><div class="glyph">所庚</div><div class="what"><b>fanqie</b>反切 spelling</div></div>
+    </div>
+    <div class="arrow-row">
+      <span><code>infer_categories</code></span><span class="to">→</span>
+      <span class="box">initial 21</span><span class="box">final 109</span><span class="box">tone 1</span>
+    </div>
+    <p class="sub" style="margin-top:14px">Readings of 重紐 finals carry a suffix such as <code>-重鈕</code> (1,982 readings), which <code>infer_categories</code> folds into the division. Entering-tone finals are first renamed to their 入聲 rhyme (庚 → 陌 when the tone is 入).</p>
+  </div>
+</section>
+<section class="col">
+  <p><code>infer_categories</code> in <code>Module:ltc-pron</code> reduces the string to three integers: one of 38 initials, one of 160 final types (final × division × openness, as far as each final distinguishes them), and a tone from 1 to 4. Both predictors, <code>predict_cmn</code> and <code>predict_yue</code>, take only those three numbers.</p>
+</section>
+
+<section class="col">
+  <h2>How <code style="background:none;padding:0">predict_yue</code> builds a syllable</h2>
+  <p>The function works in an internal notation where capital letters mark vowel quality and length, and only spells the result out in Jyutping at the end. It runs five stages, in this order. The colloquial layer hooks into three of them, marked below.</p>
+
+  <ol class="stages">
+    <li>
+      <div>
+        <h3>Initial</h3>
+        <p><code>initial_outcomes_yue</code> maps the 38 initials to Jyutping onsets. Overrides follow in priority order:</p>
+        <ul>
+          <li>Labials become <code>f</code> before the 16 finals that caused 輕唇化 (e.g. <span class="han">分</span> fan1).</li>
+          <li>Voiced obstruents in the level tone devoice to aspirates: b→p, d→t, z→c, g→k (<span class="han">平</span> ping4).</li>
+          <li>溪 <code>k</code> becomes <code>h</code> before nearly every final (160 of the 161 entries in <code>debuccalisation_inducing_yue</code>), as in <span class="han">客</span> hak1 and <span class="han">開</span> hoi1. Several initials become <code>j</code> before front glides.</li>
+        </ul>
+        <div class="hook"><b>Colloquial hook 1.</b> Devoicing to an aspirate also applies when a fully voiced initial meets the rising tone (全濁上), giving <span class="han">重</span> cung5 instead of zung6.</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Rhyme</h3>
+        <p><code>final_class_yue</code> folds the 160 final types into 40 rhyme classes. Classes 1–20 have one outcome. Classes 21–34 have three outcomes, chosen by place of articulation (labial, coronal, velar/laryngeal). In 模 that gives <span class="han">布</span> bou3, <span class="han">都</span> dou1, <span class="han">古</span> gu2. Classes 35–40 have eight outcomes, one per initial class. Open 支脂之微 give <span class="han">比</span> bei2, <span class="han">地</span> dei6, <span class="han">知</span> zi1, <span class="han">子</span> zi2, <span class="han">機</span> gei1, <span class="han">衣</span> ji1. Four special cases come first, e.g. 疑 + 模 gives the syllabic <span class="han">五</span> ng5.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Onset adjustments from the rhyme</h3>
+        <p>疑 <code>ng</code> becomes <code>j</code> before high vowels. Before the 60 rounded (合口) finals, <code>h</code> becomes <code>f</code>, a zero or <code>j</code> onset becomes <code>w</code>, and <code>g</code>/<code>k</code> become <code>gw</code>/<code>kw</code>, unless the rhyme vowel is already rounded.</p>
+        <div class="hook"><b>Colloquial hook 2.</b> After these adjustments, three rhyme replacements: 梗攝 division II <code>aN</code>→<code>AN</code>, open 梗攝 III/IV <code>IN</code>→<code>eN</code>, and 脂 after 心 <code>i</code>→<code>ei</code>. Placing them here keeps 疑 as <code>j</code> before a former high vowel: <span class="han">迎</span> jing4 → jeng4.</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Tone</h3>
+        <p>The four Middle Chinese tones split by voicing. A voiceless entering tone splits again by vowel length: long vowels go to tone 3 (中入), short vowels to tone 1. Voiced entering is tone 6. A fully voiced initial in the rising tone moves to tone 6 (濁上變去). Other voiced syllables add 3 (陽平 4, 陽上 5, 陽去 6).</p>
+        <div class="hook"><b>Colloquial hook 3.</b> 全濁上 keeps 陽上 tone 5. The long-vowel test now also counts <code>e</code>, so colloquial <span class="han">尺</span> comes out cek3. No literary rhyme starts with <code>e</code> in the entering tone, so literary output is unchanged.</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Spell-out</h3>
+        <p><code>om</code> merges into <code>am</code>. Final <code>-m</code> becomes <code>-n</code> after labial onsets (<span class="han">凡</span> faan4). In the entering tone the nasal codas become stops (<code>-m -n -N</code> → <code>-p -t -k</code>). The internal letters are then spelled in Jyutping:</p>
+      </div>
+    </li>
+  </ol>
+</section>
+<section class="wide">
+  <div class="notation" aria-label="Internal notation">
+    <div><code>A</code> → aa &nbsp;[aː]</div>
+    <div><code>a</code> → a &nbsp;[ɐ]</div>
+    <div><code>I</code> → i &nbsp;short, before ng/k</div>
+    <div><code>U</code> → u &nbsp;short, before ng/k</div>
+    <div><code>O</code> → oe &nbsp;[œː]</div>
+    <div><code>E</code> → eo &nbsp;[ɵ]</div>
+    <div><code>Y</code> → yu &nbsp;[yː]</div>
+    <div><code>N</code> → ng</div>
+  </div>
+
+  <div class="panel scroll">
+    <h4>Three readings traced through both layers</h4>
+    <p class="sub">Each cell shows the <span class="layer lit">literary</span> value, then the <span class="layer coll">colloquial</span> value where it differs.</p>
+    <table class="trace" style="margin-top:12px">
+      <thead>
+        <tr><th>Stage</th><th><span class="han">生</span> 生庚二開 平</th><th><span class="han">客</span> 溪庚二開 入</th><th><span class="han">重</span> 澄鍾三開 上</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Categories</td><td class="mono">21 · 109 · 1</td><td class="mono">29 · 113 · 4</td><td class="mono">11 · 7 · 2</td></tr>
+        <tr><td>1 Initial</td><td class="mono">s</td><td class="mono">k → h <span style="color:var(--muted)">(溪 before 113)</span></td><td><div class="pair"><span class="layer lit"><span class="mono">z</span></span><span class="layer coll"><span class="mono">c</span></span></div></td></tr>
+        <tr><td>2 Rhyme</td><td class="mono">class 9 · aN</td><td class="mono">class 9 · aN</td><td class="mono">class 20 · UN</td></tr>
+        <tr><td>3 Colloquial rime</td><td><div class="pair"><span class="layer lit"><span class="mono">aN</span></span><span class="layer coll"><span class="mono">AN</span></span></div></td><td><div class="pair"><span class="layer lit"><span class="mono">aN</span></span><span class="layer coll"><span class="mono">AN</span></span></div></td><td class="mono">UN</td></tr>
+        <tr><td>4 Tone</td><td class="mono">1</td><td><div class="pair"><span class="layer lit"><span class="mono">1 (short a)</span></span><span class="layer coll"><span class="mono">3 (long A)</span></span></div></td><td><div class="pair"><span class="layer lit"><span class="mono">6</span></span><span class="layer coll"><span class="mono">5</span></span></div></td></tr>
+        <tr class="result"><td>5 Jyutping</td><td><div class="pair"><span class="layer lit"><span class="mono">sang1</span></span><span class="layer coll"><span class="mono">saang1</span></span></div></td><td><div class="pair"><span class="layer lit"><span class="mono">hak1</span></span><span class="layer coll"><span class="mono">haak3</span></span></div></td><td><div class="pair"><span class="layer lit"><span class="mono">zung6</span></span><span class="layer coll"><span class="mono">cung5</span></span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="col">
+  <h2>The colloquial layer</h2>
+  <p>The body of <code>predict_yue</code> is now a local function, <code>yue_reflex(initial, final, tone, colloquial)</code>. <code>predict_yue</code> calls it with <code>colloquial = false</code>. The new <code>predict_yue_coll</code> calls it both ways and returns the colloquial form only when it differs, so a display can leave the cell empty where the two layers agree.</p>
+</section>
+<section class="wide">
+<pre><span class="c">-- Colloquial (白讀) layer: 梗攝 rimes keep a low vowel, giving 2nd-division</span>
+<span class="c">-- -aang/-aak (生 saang1, 白 baak6) and open 3rd/4th-division -eng/-ek</span>
+<span class="c">-- (病 beng6, 石 sek6) beside literary -ang/-ak and -ing/-ik.</span>
+local colloquial_geng_2_yue = { [109] = true, [110] = true, [113] = true, [114] = true,
+	[117] = true, [118] = true, [119] = true, [120] = true }
+local colloquial_geng_34_yue = { [111] = true, [115] = true, [121] = true,
+	[123] = true, [125] = true, [127] = true }
+
+local function yue_reflex(initial, final, tone, colloquial)
+	local initial_result = initial_outcomes_yue[initial]
+<span class="add">	local voiced_rising = colloquial and tone == 2 and fully_voiced_initial[initial]</span>	…
+<span class="add">	elseif (tone == 1 or voiced_rising) and devoicing_initial_yue[initial] then</span>	…
+<span class="add">	if colloquial then
+		if colloquial_geng_2_yue[final] and final_result == "aN" then
+			final_result = "AN"
+		elseif colloquial_geng_34_yue[final] and final_result == "IN" then
+			final_result = "eN"
+		<span class="c">-- 脂 after 心 only: 四 sei3, 死 sei2, 肆 sei3.</span>
+		elseif final == 15 and initial == 16 and final_result == "i" then
+			final_result = "ei"
+		end
+	end</span>	…
+<span class="add">		elseif mw.ustring.find(final_result, "^[AiouOYe]") ~= nil then</span>	…
+<span class="add">	elseif tone == 2 and fully_voiced_initial[initial] and not voiced_rising then</span>	…
+end
+
+function export.predict_yue(initial, final, tone)
+	return yue_reflex(initial, final, tone, false)
+end
+
+<span class="add"><span class="c">-- Expected colloquial (白讀) Cantonese reflex, or nil where the colloquial</span>
+<span class="c">-- layer is not expected to differ from predict_yue.</span>
+function export.predict_yue_coll(initial, final, tone)
+	local colloquial = yue_reflex(initial, final, tone, true)
+	if colloquial ~= yue_reflex(initial, final, tone, false) then
+		return colloquial
+	end
+end</span></pre>
+</section>
+
+<section class="col">
+  <p>The diff against the live module is 56 lines added and 5 removed. Over all 25,609 Middle Chinese readings on Wiktionary, <code>predict_yue</code> and <code>predict_cmn</code> produce exactly what the live module produces. 2,821 readings get a distinct colloquial form.</p>
+
+  <h3>The four rules</h3>
+  <p>Each card gives the Middle Chinese condition, a sample of attested pairs, and how often the rule's output is attested among characters that have Cantonese readings on Wiktionary.</p>
+</section>
+<section class="wide">
+  <div class="rules">
+    <div class="rule">
+      <h3>梗攝 division II: <span class="mono">-ang/-ak</span> → <span class="mono">-aang/-aak</span></h3>
+      <div class="cond">Finals 庚 陌 耕 麥, division II, open and closed.</div>
+      <div class="examples">
+        <span class="ex"><span class="han">生</span><span class="from">sang1</span><span class="to">saang1</span></span>
+        <span class="ex"><span class="han">冷</span><span class="from">lang5</span><span class="to">laang5</span></span>
+        <span class="ex"><span class="han">坑</span><span class="from">hang1</span><span class="to">haang1</span></span>
+        <span class="ex"><span class="han">白</span><span class="from">bak6</span><span class="to">baak6</span></span>
+        <span class="ex"><span class="han">伯</span><span class="from">bak1</span><span class="to">baak3</span></span>
+        <span class="ex"><span class="han">冊</span><span class="from">cak1</span><span class="to">caak3</span></span>
+        <span class="ex"><span class="han">客</span><span class="from">hak1</span><span class="to">haak3</span></span>
+      </div>
+      <div class="stats">163 of 433 predicted forms attested (38%). Each one is a reading the literary layer missed.</div>
+    </div>
+    <div class="rule">
+      <h3>全濁上: unaspirated tone 6 → aspirated tone 5</h3>
+      <div class="cond">Fully voiced initials (並 定 澄 從 邪 崇 俟 常 船 羣 匣) in the rising tone.</div>
+      <div class="examples">
+        <span class="ex"><span class="han">重</span><span class="from">zung6</span><span class="to">cung5</span></span>
+        <span class="ex"><span class="han">舅</span><span class="from">gau6</span><span class="to">kau5</span></span>
+        <span class="ex"><span class="han">婢</span><span class="from">bei6</span><span class="to">pei5</span></span>
+        <span class="ex"><span class="han">似</span><span class="from">zi6</span><span class="to">ci5</span></span>
+        <span class="ex"><span class="han">抱</span><span class="from">bou6</span><span class="to">pou5</span></span>
+        <span class="ex"><span class="han">市</span><span class="from">si6</span><span class="to">si5</span></span>
+        <span class="ex"><span class="han">旱</span><span class="from">hon6</span><span class="to">hon5</span></span>
+      </div>
+      <div class="stats">147 of 675 attested (22%). Fricative initials keep their onset and change only the tone.</div>
+    </div>
+    <div class="rule">
+      <h3>梗攝 divisions III–IV, open: <span class="mono">-ing/-ik</span> → <span class="mono">-eng/-ek</span></h3>
+      <div class="cond">Finals 庚 陌 (III) and 清 昔 青 錫, open only. Voiceless entering moves to tone 3.</div>
+      <div class="examples">
+        <span class="ex"><span class="han">病</span><span class="from">bing6</span><span class="to">beng6</span></span>
+        <span class="ex"><span class="han">名</span><span class="from">ming4</span><span class="to">meng4</span></span>
+        <span class="ex"><span class="han">井</span><span class="from">zing2</span><span class="to">zeng2</span></span>
+        <span class="ex"><span class="han">嶺</span><span class="from">ling5</span><span class="to">leng5</span></span>
+        <span class="ex"><span class="han">尺</span><span class="from">cik1</span><span class="to">cek3</span></span>
+        <span class="ex"><span class="han">壁</span><span class="from">bik1</span><span class="to">bek3</span></span>
+        <span class="ex"><span class="han">石</span><span class="from">sik6</span><span class="to">sek6</span></span>
+      </div>
+      <div class="stats">75 of 731 attested (10%). Most characters in these rhymes have only the literary reading.</div>
+    </div>
+    <div class="rule">
+      <h3>脂 after 心: <span class="mono">-i</span> → <span class="mono">-ei</span></h3>
+      <div class="cond">Open 脂 with the 心 initial. Other initials in this class already get <span class="mono">-ei</span> as their literary reflex (<span class="han">地</span> dei6, <span class="han">機</span> gei1).</div>
+      <div class="examples">
+        <span class="ex"><span class="han">四</span><span class="from">si3</span><span class="to">sei3</span></span>
+        <span class="ex"><span class="han">死</span><span class="from">si2</span><span class="to">sei2</span></span>
+        <span class="ex"><span class="han">肆</span><span class="from">si3</span><span class="to">sei3</span></span>
+        <span class="ex"><span class="han">泗</span><span class="from">si3</span><span class="to">sei3</span></span>
+      </div>
+      <div class="stats">6 of 10 attested (60%). Narrow, but nearly every eligible character has it.</div>
+    </div>
+  </div>
+</section>
+
+<section class="col">
+  <h2>How many more readings match</h2>
+  <p>The test set is every character that has both Middle Chinese data and Cantonese readings (<code>c=</code> in <code>{{zh-pron}}</code>) on its own page: 12,681 characters with 17,595 distinct attested readings. A reading counts as matched if it equals the prediction for any of the character's Middle Chinese readings.</p>
+</section>
+<section class="wide">
+  <div class="panel">
+    <h4>17,595 attested Cantonese readings, by which layer predicts them</h4>
+    <div class="stack" role="img" aria-label="11,034 matched by literary, 392 added by colloquial, 6,169 unmatched">
+      <div class="seg-lit" style="flex: 11034" tabindex="0" data-tip="Literary prediction: 11,034 readings (62.7%)"></div>
+      <div class="seg-coll" style="flex: 392" tabindex="0" data-tip="Added by the colloquial layer: 392 readings (2.2%)"></div>
+      <div class="seg-none" style="flex: 6169" tabindex="0" data-tip="Matched by neither: 6,169 readings (35.1%)"></div>
+    </div>
+    <div class="legend">
+      <span class="item"><span class="sw" style="background:var(--lit)"></span>Literary <span class="v">11,034 · 62.7%</span></span>
+      <span class="item"><span class="sw" style="background:var(--coll)"></span>Added by colloquial <span class="v">392 · 2.2%</span></span>
+      <span class="item"><span class="sw" style="background:var(--rest)"></span>Neither <span class="v">6,169 · 35.1%</span></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h4>Colloquial forms predicted, and how many are attested</h4>
+    <p class="sub">Bar length is the number of distinct colloquial forms each rule predicts; the solid part is the share found among Wiktionary's readings. Every attested form here was missed by the literary layer.</p>
+    <div class="meters">
+      <div class="m-row" tabindex="0" data-tip="梗攝 II: 433 colloquial forms predicted, 163 attested (38%)">
+        <div class="m-label">梗攝 II<span>-aang/-aak</span></div>
+        <div class="m-scale"><div class="m-bar" style="width: 59.2%"><div class="fill" style="flex: 163"></div><div class="rest" style="flex: 270"></div></div></div>
+        <div class="m-value"><b>163</b> of 433 · 38%</div>
+      </div>
+      <div class="m-row" tabindex="0" data-tip="全濁上: 675 colloquial forms predicted, 147 attested (22%)">
+        <div class="m-label">全濁上<span>aspirate + tone 5</span></div>
+        <div class="m-scale"><div class="m-bar" style="width: 92.3%"><div class="fill" style="flex: 147"></div><div class="rest" style="flex: 528"></div></div></div>
+        <div class="m-value"><b>147</b> of 675 · 22%</div>
+      </div>
+      <div class="m-row" tabindex="0" data-tip="梗攝 III–IV: 731 colloquial forms predicted, 75 attested (10%)">
+        <div class="m-label">梗攝 III–IV<span>-eng/-ek</span></div>
+        <div class="m-scale"><div class="m-bar" style="width: 100%"><div class="fill" style="flex: 75"></div><div class="rest" style="flex: 656"></div></div></div>
+        <div class="m-value"><b>75</b> of 731 · 10%</div>
+      </div>
+      <div class="m-row" tabindex="0" data-tip="梗攝 and 全濁上 together: 40 colloquial forms predicted, 1 attested (3%)">
+        <div class="m-label">梗攝 + 全濁上<span>both rules at once</span></div>
+        <div class="m-scale"><div class="m-bar" style="width: 5.5%"><div class="fill" style="flex: 1"></div><div class="rest" style="flex: 39"></div></div></div>
+        <div class="m-value"><b>1</b> of 40 · 3%</div>
+      </div>
+      <div class="m-row" tabindex="0" data-tip="脂 after 心: 10 colloquial forms predicted, 6 attested (60%)">
+        <div class="m-label">脂 after 心<span>-ei</span></div>
+        <div class="m-scale"><div class="m-bar" style="width: 1.4%"><div class="fill" style="flex: 6"></div><div class="rest" style="flex: 4"></div></div></div>
+        <div class="m-value"><b>6</b> of 10 · 60%</div>
+      </div>
+    </div>
+    <div class="m-axis" aria-hidden="true">
+      <div></div>
+      <div class="ticks"><span style="left:0">0</span><span style="left:27.36%">200</span><span style="left:54.72%">400</span><span style="left:82.08%">600</span></div>
+      <div></div>
+    </div>
+  </div>
+</section>
+
+<section class="col">
+  <p>The colloquial layer adds 392 matched readings, raising coverage from 62.7% to 64.9%, and 259 more characters have all their readings explained. The gain is modest because colloquial forms are lexical: most characters in a 梗攝 rhyme never developed a colloquial reading, so a low attestation rate is expected, not a sign the rule is wrong. The rate still separates the rules. Division II -aang/-aak is attested for 38% of eligible characters, open III–IV -eng/-ek for only 10%.</p>
+
+  <h3>What Wiktionary's own labels say</h3>
+  <p>A <code>c_note</code> on <code>{{zh-pron}}</code> sometimes labels Cantonese readings, as on <span class="han">生</span>: <code>saang1 - colloquial; sang1 - literary</code>. Only 136 characters carry such labels, too few to learn from but enough to check against.</p>
+</section>
+<section class="wide">
+  <div class="panel scroll">
+    <table>
+      <thead><tr><th>Label in c_note</th><th class="num">Literary layer predicts it</th><th class="num">Colloquial layer predicts it</th><th class="num">Neither</th></tr></thead>
+      <tbody>
+        <tr><td><span class="layer lit">literary</span></td><td class="num">93</td><td class="num">2</td><td class="num">22</td></tr>
+        <tr><td><span class="layer coll">colloquial</span></td><td class="num">7</td><td class="num">4</td><td class="num">14</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>The 7 "colloquial" readings that the literary layer predicts mostly come from a <em>different</em> Middle Chinese reading of the same character. <span class="han">車</span> ce1 (colloquial) and geoi1 (literary) descend from two separate 廣韻 readings, and the module already predicts both. Wiktionary's label there marks a reading split, not a stratum. The 2 literary-labelled readings caught by the colloquial layer are <span class="han">舵</span> to5 and <span class="han">喫</span> hek3: forms of our "colloquial" type that serve as the ordinary reading.</p>
+  <p>The 14 colloquial-labelled readings matched by neither layer point to the next rules to try: 效攝 <span class="mono">-iu → -eu</span> (<span class="han">調</span> deu6, <span class="han">噍</span> zeu6), 果攝 <span class="mono">-o → -oe</span> (<span class="han">多</span> doe1, <span class="han">朵</span> doe2), plus single-word items such as <span class="han">婦</span> pou5 in 新抱.</p>
+</section>
+
+<section class="col">
+  <h2>Open questions</h2>
+  <ol class="questions">
+    <li>
+      <h3>Should the two kinds of rule stack?</h3>
+      <p>A 梗攝 syllable with a fully voiced initial in the rising tone triggers both rules, and the combined form is almost never attested (1 of 40). The attested forms show one rule or the other:</p>
+      <div class="panel scroll" style="margin-top:12px">
+        <table>
+          <thead><tr><th>Char</th><th>MC</th><th>Literary</th><th>Combined</th><th>Attested</th></tr></thead>
+          <tbody>
+            <tr><td class="han">挺</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">ting5 ting2 ting4</td></tr>
+            <tr><td class="han">梃 娗 誔 涏 鋌</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">ting5</td></tr>
+            <tr><td class="han">艇</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">teng5 ting5</td></tr>
+            <tr><td class="han">阱</td><td class="han">從清三開 上</td><td class="mono">zing6</td><td class="mono">ceng5</td><td class="mono">zing6 zeng6 zeng2</td></tr>
+            <tr><td class="han">靜 靖 婧</td><td class="han">從清三開 上</td><td class="mono">zing6</td><td class="mono">ceng5</td><td class="mono">zing6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The tone-5 aspirate and the low 梗攝 vowel behave as independent layers. Options: return one form per layer (a list instead of one string), or split 全濁上 into its own function.</p>
+    </li>
+    <li>
+      <h3>Is 全濁上 tone 5 colloquial at all?</h3>
+      <p>Among single-reading characters, 63 attest only the tone-5 aspirate, 168 only the literary tone 6, and 21 both. For words like <span class="han">舅</span> kau5, <span class="han">婢</span> pei5 and <span class="han">似</span> ci5 the "colloquial" form is the only reading, and Wiktionary labels <span class="han">舵</span> to5 literary. It may fit better as a vernacular tone layer, separate from the 白讀 rhymes.</p>
+    </li>
+    <li>
+      <h3>Should -aang/-aak be the default in 梗攝 II?</h3>
+      <p>In voiceless entering syllables of 梗攝 II, the literary prediction <span class="mono">-ak</span> is attested 9 times (7 in tone 1); <span class="mono">-aak</span> is attested 59 times (40 in tone 3, 10 in tone 1, 9 in tone 6). Across all tones, 86 single-reading characters attest only -aang/-aak and 68 only -ang/-ak. Here the "colloquial" form is the commoner one.</p>
+    </li>
+    <li>
+      <h3>What is in the unmatched 35%?</h3>
+      <p>Not yet broken down. The samples so far show readings taken from the phonetic component (<span class="han">吸</span> kap1), 又讀 that 廣韻 does not record, and readings of rare characters. Separating those from true misses in the rules is the next step for both layers.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="col">
+  <h2>How this was measured</h2>
+  <p>The Lua modules run unchanged under Lua 5.1 (the version Scribunto uses) through lupa, with a small stand-in for <code>mw.ustring</code> and <code>mw.text</code> written in Python. Lua's own patterns match bytes, so the stand-in translates patterns to Python regular expressions and matches whole characters. For <span class="han">生 重 白 石 四 坐 話 吃</span> the local output was compared with what Wiktionary renders and agrees on every reading.</p>
+  <p>Data comes from the enwiktionary dump of 1 November 2026: 19,843 characters with Middle Chinese modules, 183,342 pages with <code>{{zh-pron}}</code>, and 1,027 dial-pron modules. Module data is evaluated in an empty Lua environment, so it can only build tables.</p>
+  <div class="files">
+    <div><code>modules/ltc-pron/predict.lua</code><span>working copy with <code>predict_yue_coll</code></span></div>
+    <div><code>ltcpron/lua.py</code><span>Scribunto stand-in on lupa</span></div>
+    <div><code>ltcpron/dump.py</code><span>dump extraction</span></div>
+    <div><code>ltcpron/chars.py</code><span>joins MC, Cantonese and dial-pron data by character</span></div>
+    <div><code>scripts/yue_coll_coverage.py</code><span>the coverage figures on this page</span></div>
+    <div><code>scripts/yue_coll_hypotheses.py</code><span>rule-by-rule exploration</span></div>
+  </div>
+</section>
+
+</main>
+<div id="tip" role="tooltip"></div>
+<script>
+(function () {
+  var tip = document.getElementById("tip");
+  function show(el) {
+    tip.textContent = el.getAttribute("data-tip");
+    var r = el.getBoundingClientRect();
+    tip.classList.add("on");
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), window.innerWidth - w - 8);
+    var y = r.top - h - 8;
+    if (y < 8) y = r.bottom + 8;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  }
+  function hide() { tip.classList.remove("on"); }
+  document.querySelectorAll("[data-tip]").forEach(function (el) {
+    el.addEventListener("pointerenter", function () { show(el); });
+    el.addEventListener("pointerleave", hide);
+    el.addEventListener("focus", function () { show(el); });
+    el.addEventListener("blur", hide);
+  });
+  window.addEventListener("scroll", hide, { passive: true });
+})();
+</script>
+</body>
+</html>

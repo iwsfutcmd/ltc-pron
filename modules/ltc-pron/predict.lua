@@ -1018,13 +1018,40 @@ local debuccalisation_inducing_yue = {
     [160] = true,
 }
 
-function export.predict_yue(initial, final, tone)
+-- Colloquial (白讀) layer: 梗攝 rimes keep a low vowel, giving 2nd-division
+-- -aang/-aak (生 saang1, 白 baak6) and open 3rd/4th-division -eng/-ek
+-- (病 beng6, 石 sek6) beside literary -ang/-ak and -ing/-ik.
+local colloquial_geng_2_yue = {
+	[109] = true,
+	[110] = true,
+	[113] = true,
+	[114] = true,
+	[117] = true,
+	[118] = true,
+	[119] = true,
+	[120] = true,
+}
+
+local colloquial_geng_34_yue = {
+	[111] = true,
+	[115] = true,
+	[121] = true,
+	[123] = true,
+	[125] = true,
+	[127] = true,
+}
+
+local function yue_reflex(initial, final, tone, colloquial)
 	local initial_result = initial_outcomes_yue[initial]
+
+	-- 全濁上: the colloquial layer keeps the 陽上 tone, and stops and affricates
+	-- devoice to aspirates as in 平聲 (重 cung5, 坐 co5, 近 kan5).
+	local voiced_rising = colloquial and tone == 2 and fully_voiced_initial[initial]
 
 	if fricativisation_inducing[final] and initial <= 3 then
 		initial_result = "f"
 
-	elseif tone == 1 and devoicing_initial_yue[initial] then
+	elseif (tone == 1 or voiced_rising) and devoicing_initial_yue[initial] then
 		initial_result = devoicing_outcomes[initial_result]
 
 	elseif initial == 17 and labialisation_inducing_yue[final] then
@@ -1079,17 +1106,28 @@ function export.predict_yue(initial, final, tone)
 			initial_result = "kw"
 		end
 	end
-	
+
+	if colloquial then
+		if colloquial_geng_2_yue[final] and final_result == "aN" then
+			final_result = "AN"
+		elseif colloquial_geng_34_yue[final] and final_result == "IN" then
+			final_result = "eN"
+		-- 脂 after 心 only: 四 sei3, 死 sei2, 肆 sei3.
+		elseif final == 15 and initial == 16 and final_result == "i" then
+			final_result = "ei"
+		end
+	end
+
 	local tone_result
 	if tone == 4 then
 		if fully_voiced_initial[initial] or partially_voiced_initial[initial] then
 			tone_result = 6
-		elseif mw.ustring.find(final_result, "^[AiouOY]") ~= nil then
+		elseif mw.ustring.find(final_result, "^[AiouOYe]") ~= nil then
 			tone_result = 3
 		else
 			tone_result = 1
 		end
-	elseif tone == 2 and fully_voiced_initial[initial] then
+	elseif tone == 2 and fully_voiced_initial[initial] and not voiced_rising then
 		tone_result = 6
 	elseif fully_voiced_initial[initial] or partially_voiced_initial[initial] then
 		tone_result = 3 + tone
@@ -1119,6 +1157,19 @@ function export.predict_yue(initial, final, tone)
 	final_result = mw.ustring.gsub(final_result, "N", "ng")
 
 	return initial_result .. final_result .. "<sup>" .. tone_result .. "</sup>"
+end
+
+function export.predict_yue(initial, final, tone)
+	return yue_reflex(initial, final, tone, false)
+end
+
+-- Expected colloquial (白讀) Cantonese reflex, or nil where the colloquial
+-- layer is not expected to differ from predict_yue.
+function export.predict_yue_coll(initial, final, tone)
+	local colloquial = yue_reflex(initial, final, tone, true)
+	if colloquial ~= yue_reflex(initial, final, tone, false) then
+		return colloquial
+	end
 end
 
 return export

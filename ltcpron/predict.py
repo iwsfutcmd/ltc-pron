@@ -46,3 +46,7 @@ class LtcPron:
         """Expected Cantonese reflex, Jyutping (e.g. 'sang1')."""
         return _SUP.sub(r"\1", self.predict.predict_yue(c.initial, c.final, c.tone))
 
+    def yue_coll(self, c: Categories) -> str | None:
+        """Expected colloquial Cantonese reflex, or None if it matches yue()."""
+        out = self.predict.predict_yue_coll(c.initial, c.final, c.tone)
+        return _SUP.sub(r"\1", out) if out else None
