@@ -215,6 +215,28 @@ pre .addlit { display: block; background: var(--lit-wash); margin: 0 -18px; padd
 .wv-ref { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1px dashed var(--muted); pointer-events: none; }
 .wv-axis { display: grid; grid-template-columns: 190px 1fr; gap: 14px; margin-top: 8px; }
 
+/* Stacking: 2×2 grids of rhyme layer × tone layer */
+.grids { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-top: 18px; }
+.g2-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; }
+.g2-card h4 { margin: 0; font-size: 0.95rem; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.g2-card h4 .han { font-size: 1.3rem; }
+.g2-card h4 small { font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+.g2 { display: grid; grid-template-columns: 64px 1fr 1fr; gap: 4px; margin-top: 10px; font-size: 0.8rem; }
+.g2 .hd { color: var(--ink-2); font-size: 0.72rem; line-height: 1.3; padding: 2px 4px; align-self: end; }
+.g2 .rh { color: var(--ink-2); font-size: 0.72rem; line-height: 1.3; padding: 2px 4px; align-self: center; }
+.g2 .cell { background: var(--paper); border: 1px dashed var(--rule); border-radius: 6px; padding: 7px 9px; min-height: 54px; }
+.g2 .cell .f { font-family: var(--font-mono); font-size: 0.95rem; color: var(--muted); }
+.g2 .cell .who { display: block; font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+.g2 .cell.att { border: 1.5px solid var(--ink-2); background: var(--surface); }
+.g2 .cell.att .f { color: var(--ink); font-weight: 600; }
+.g2 .cell.att .f::after { content: "  ✓"; font-family: var(--font-body); font-weight: 500; }
+.g2-card .other { margin-top: 8px; font-size: 0.78rem; color: var(--muted); }
+.key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font-size: 0.82rem; color: var(--ink-2); }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; width: 22px; height: 14px; border-radius: 4px; }
+.key i.on { border: 1.5px solid var(--ink-2); background: var(--surface); }
+.key i.off { border: 1px dashed var(--rule); background: var(--paper); }
+
 /* Open questions */
 ol.questions { padding-left: 1.4em; margin: 18px 0 0; }
 ol.questions > li { margin-top: 18px; padding-left: 4px; }
@@ -676,6 +698,92 @@ end</span></pre>
   <p>The rejected candidates fail the other way. 緝 -aap is the ordinary reading in learned words such as <span class="han">學習</span> and <span class="han">集中</span>, so after 從 and 邪 it became a literary fix instead. 豪 -aau is almost entirely one phonetic series (<span class="han">考 栲 洘 丂</span>), and 咍 -aai is scattered across initials (<span class="han">乃</span> naai5, <span class="han">孩</span> haai4, <span class="han">貸</span> taai3) with no conditioning. Four further candidates have too few word tokens to judge: 日 n- (<span class="han">餌</span> nei6), 疑 ng- (<span class="han">蟻</span> ngai5), 蕭宵 -eu (<span class="han">調</span> deu6) and 歌戈 -oe (<span class="han">多</span> doe1).</p>
 </section>
 
+<section class="col" id="stacking">
+  <h2>When two rules meet one reading</h2>
+  <p>Each colloquial rule changes one part of the syllable. The 梗攝 rules change the rhyme (<span class="mono">-ing → -eng</span>, <span class="mono">-ang → -aang</span>). The 全濁上 rule changes the onset and tone (unaspirated tone 6 → aspirated tone 5). Most readings meet the conditions of at most one rule, but a 梗攝 syllable with a fully voiced initial in the rising tone meets both. <span class="han">挺</span> is one: 定 initial, 青 final, rising tone.</p>
+  <p><code>predict_yue_coll</code> applies every rule whose conditions a reading meets, so for <span class="han">挺</span> it changes the rhyme <em>and</em> the onset and tone, and returns teng5. That is what "stacking" means here. It treats the colloquial layer as one package: a word that entered Cantonese through the colloquial layer should show every colloquial change its syllable is eligible for. The alternative is that the changes are independent, so a word can have the colloquial rhyme without the colloquial tone, or the other way round.</p>
+  <p>Laying out both choices for one reading gives four possible forms, and the attested readings show which of them occur:</p>
+</section>
+<section class="wide">
+  <div class="key">
+    <span><i class="on"></i>attested on the character's page ✓</span>
+    <span><i class="off"></i>not attested</span>
+    <span>Rows: rhyme layer · Columns: tone layer</span>
+  </div>
+  <div class="grids">
+    <div class="g2-card">
+      <h4><span class="han">挺</span> 定青四開 上 <small>also ting2, ting4</small></h4>
+      <div class="g2">
+        <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
+        <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell att"><span class="f">ting5</span><span class="who">tone only</span></div>
+        <div class="rh">-eng (梗攝)</div><div class="cell"><span class="f">deng6</span><span class="who">rhyme only</span></div><div class="cell"><span class="f">teng5</span><span class="who">predict_yue_coll</span></div>
+      </div>
+    </div>
+    <div class="g2-card">
+      <h4><span class="han">艇</span> 定青四開 上</h4>
+      <div class="g2">
+        <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
+        <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell att"><span class="f">ting5</span><span class="who">tone only</span></div>
+        <div class="rh">-eng (梗攝)</div><div class="cell"><span class="f">deng6</span><span class="who">rhyme only</span></div><div class="cell att"><span class="f">teng5</span><span class="who">predict_yue_coll</span></div>
+      </div>
+    </div>
+    <div class="g2-card">
+      <h4><span class="han">訂</span> 定青四開 上 <small>also deng3, ding3</small></h4>
+      <div class="g2">
+        <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
+        <div class="rh">-ing</div><div class="cell"><span class="f">ding6</span><span class="who">predict_yue</span></div><div class="cell"><span class="f">ting5</span><span class="who">tone only</span></div>
+        <div class="rh">-eng (梗攝)</div><div class="cell att"><span class="f">deng6</span><span class="who">rhyme only</span></div><div class="cell"><span class="f">teng5</span><span class="who">predict_yue_coll</span></div>
+      </div>
+    </div>
+    <div class="g2-card">
+      <h4><span class="han">靜</span> 從清三開 上</h4>
+      <div class="g2">
+        <div></div><div class="hd">tone 6, unaspirated</div><div class="hd">tone 5, aspirated (全濁上)</div>
+        <div class="rh">-ing</div><div class="cell att"><span class="f">zing6</span><span class="who">predict_yue</span></div><div class="cell"><span class="f">cing5</span><span class="who">tone only</span></div>
+        <div class="rh">-eng (梗攝)</div><div class="cell"><span class="f">zeng6</span><span class="who">rhyme only</span></div><div class="cell"><span class="f">ceng5</span><span class="who">predict_yue_coll</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel scroll">
+    <h4>All 53 readings where both rules apply</h4>
+    <p class="sub">40 are on characters with Cantonese readings; 23 of those attest at least one of the four forms. A reading can attest more than one.</p>
+    <table style="margin-top:12px">
+      <thead><tr><th>Form</th><th class="num">Readings attesting it</th><th class="num">Word tokens</th><th>Characters</th></tr></thead>
+      <tbody>
+        <tr><td><span class="layer lit">literary (neither change)</span></td><td class="num">15</td><td class="num">200</td><td><span class="han">靜 靖 婧 妌 竫 杏 幸 倖 荇 莕 㼬 澋 痙 並 阱</span></td></tr>
+        <tr><td><span class="layer coll">tone only</span></td><td class="num">7</td><td class="num">17</td><td><span class="han">挺 梃 娗 涏 誔 鋌 艇</span>, all ting5</td></tr>
+        <tr><td><span class="layer coll">rhyme only</span></td><td class="num">2</td><td class="num">22</td><td><span class="han">訂</span> deng6, <span class="han">阱</span> zeng6</td></tr>
+        <tr><td><span class="layer coll">stacked (current output)</span></td><td class="num">1</td><td class="num">34</td><td><span class="han">艇</span> teng5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>The table answers less than it seems to, for three reasons.</p>
+  <ul>
+    <li><b>Most of these readings have no colloquial form at all.</b> 15 of the 23 attest only the literary reading, and 17 of the 40 attest none of the four.</li>
+    <li><b>The "tone only" evidence is one phonetic series.</b> All seven characters are written with <span class="han">廷</span>, which is itself a level-tone syllable with a regular aspirate (<span class="han">廷 庭</span> ting4). Their ting5 may copy that aspirate by analogy rather than reflect the 全濁上 layer.</li>
+    <li><b>The single-layer and stacked forms that do occur are ordinary readings, not vernacular ones.</b> <span class="han">艇</span> teng5 is the word for boat in every register (<span class="han">遊艇 潛艇 救生艇</span>), and <span class="han">訂</span> deng6 is the everyday reading in <span class="han">訂單 預訂</span>.</li>
+  </ul>
+  <p>Coverage barely depends on the choice:</p>
+</section>
+<section class="wide">
+  <div class="panel scroll">
+    <table>
+      <thead><tr><th>What <code>predict_yue_coll</code> returns for these readings</th><th class="num">Attested readings matched</th><th class="num">vs current</th></tr></thead>
+      <tbody>
+        <tr><td>The stacked form (current)</td><td class="num">11,605 · 65.96%</td><td class="num">–</td></tr>
+        <tr><td>One form per layer: rhyme only and tone only</td><td class="num">11,613 · 66.00%</td><td class="num">+8</td></tr>
+        <tr><td>All three: rhyme only, tone only and stacked</td><td class="num">11,614 · 66.01%</td><td class="num">+9</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>So the data neither shows the layers stacking nor shows them independent; it mostly shows that these 53 readings stay literary. The decision can be made on how the result is displayed. One string fits the existing "Expected Cantonese Reflex" cell in the Middle Chinese table. Returning one form per layer would match 8 more readings, but the table would then need room for two colloquial forms in the few cells where both rules apply.</p>
+</section>
+
 <section class="col">
   <h2>Fixes to the literary layer</h2>
   <p>Sorting the readings neither layer matched by Middle Chinese category turned up four places where <code>predict_yue</code> itself is wrong for common characters. Each was measured on its own against the attested readings before it was committed.</p>
@@ -751,21 +859,8 @@ end</span></pre>
   <h2>Open questions</h2>
   <ol class="questions">
     <li>
-      <h3>Should the layers stack?</h3>
-      <p>A 梗攝 syllable with a fully voiced initial in the rising tone triggers two rules, and the combined form is almost never attested (1 of 40). The attested forms show one rule or the other:</p>
-      <div class="panel scroll" style="margin-top:12px">
-        <table>
-          <thead><tr><th>Char</th><th>MC</th><th>Literary</th><th>Combined</th><th>Attested</th></tr></thead>
-          <tbody>
-            <tr><td class="han">挺</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">ting5 ting2 ting4</td></tr>
-            <tr><td class="han">梃 娗 誔 涏 鋌</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">ting5</td></tr>
-            <tr><td class="han">艇</td><td class="han">定青四開 上</td><td class="mono">ding6</td><td class="mono">teng5</td><td class="mono">teng5 ting5</td></tr>
-            <tr><td class="han">阱</td><td class="han">從清三開 上</td><td class="mono">zing6</td><td class="mono">ceng5</td><td class="mono">zing6 zeng6 zeng2</td></tr>
-            <tr><td class="han">靜 靖 婧</td><td class="han">從清三開 上</td><td class="mono">zing6</td><td class="mono">ceng5</td><td class="mono">zing6</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>The tone-5 aspirate and the low 梗攝 vowel behave as independent layers. Options: return one form per layer (a list instead of one string), or split 全濁上 into its own function.</p>
+      <h3>One colloquial form, or one per layer?</h3>
+      <p>For the 53 readings where a 梗攝 rule and 全濁上 both apply, <code>predict_yue_coll</code> returns the stacked form. Returning the rhyme-only and tone-only forms instead matches 8 more readings, but the evidence is one phonetic series and three characters (see <a href="#stacking">When two rules meet one reading</a>). The choice can follow what the Middle Chinese table can display.</p>
     </li>
     <li>
       <h3>Should -aang/-aak be the default in 梗攝 II?</h3>
@@ -795,6 +890,7 @@ end</span></pre>
     <div><code>scripts/yue_coll_coverage.py</code><span>coverage figures and the per-rule chart</span></div>
     <div><code>scripts/yue_words.py</code><span>vernacular shares in words</span></div>
     <div><code>scripts/yue_misses.py</code><span>breakdown of unmatched readings</span></div>
+    <div><code>scripts/yue_stacking.py</code><span>the four forms where two rules meet</span></div>
     <div><code>scripts/yue_compare.py</code>, <code>yue_tally.py</code><span>before/after measurement and per-category tallies</span></div>
   </div>
 </section>
