@@ -45,30 +45,34 @@ This writes `data/extracted/`: Middle Chinese readings, dial-pron data,
 | `yue_compare.py [REV]` | working-tree modules vs a revision: readings gained and lost |
 | `yue_tally.py` | attested outcomes for a slice of Middle Chinese |
 | `ltc_table.py PAGE…` | renders the Middle Chinese table for a page locally |
-| `wiki_deploy.py` | uploads the modules to your Wiktionary userspace |
+| `wiki_deploy.py` | builds the modules for your Wiktionary userspace |
 
 Run them with `uv run python scripts/<name>`.
 
 ## Testing live on Wiktionary
 
-`scripts/wiki_deploy.py` uploads userspace copies of the changed modules:
+`scripts/wiki_deploy.py` builds userspace copies of the changed modules, to
+paste into Wiktionary by hand:
 
 - `Module:User:<you>/ltc-pron/predict`
 - `Module:User:<you>/ltc-pron`, which requires the userspace predict and adds a
   `show` entry point: `{{#invoke:User:<you>/ltc-pron|show|生病}}`
 - `User:<you>/ltc-pron`, a test page rendering the table for a list of pages
 
-It runs the built modules locally on the test pages before uploading.
+```sh
+uv run scripts/wiki_deploy.py --user YourName
+```
 
-1. Create a bot password at
-   [Special:BotPasswords](https://en.wiktionary.org/wiki/Special:BotPasswords)
-   with the grants "Edit existing pages" and "Create, edit, and move pages".
-2. Put it in `.env` (gitignored):
-   ```
-   WIKTIONARY_BOT_USER=YourName@ltc-pron
-   WIKTIONARY_BOT_PASSWORD=...
-   ```
-3. `uv run scripts/wiki_deploy.py` (add `--dry-run` to build and check only, or
-   `--pages 生 重 …` to choose the test pages).
+checks the built modules locally on the test pages, writes them to
+`build/userspace/` (`1-predict.lua`, `2-ltc-pron.lua`, `3-test-page.wiki`) and
+prints each page's edit link and the edit summary to use. Paste each file over
+the whole edit box, in that order, and save. Add `--copy` to be walked through
+them: each page's text goes to the clipboard and its edit page opens in the
+browser, and Enter moves to the next. `--pages 生 重 …` chooses the test pages;
+`WIKTIONARY_USER=YourName` in `.env` saves passing `--user`.
 
-Each upload's edit summary links the commit it came from.
+To save through the API instead, create a bot password at
+[Special:BotPasswords](https://en.wiktionary.org/wiki/Special:BotPasswords)
+(grants "Edit existing pages" and "Create, edit, and move pages"), put
+`WIKTIONARY_BOT_USER=YourName@ltc-pron` and `WIKTIONARY_BOT_PASSWORD=...` in
+`.env`, and add `--upload`.

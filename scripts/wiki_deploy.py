@@ -17,28 +17,36 @@ the page title from the page being viewed:
 The test page invokes show() for each test page, under a heading linking to
 the live entry for comparison.
 
-Before uploading, the built modules are run locally (via lupa) on the test
-pages, so a broken build never reaches Wiktionary.
+The built pages are run locally (via lupa) on the test pages first, so a
+broken build never reaches Wiktionary. Then, by default, the script writes
+them to build/userspace/ and prints each page's title, edit link and file,
+for pasting by hand. Paste them in order: predict, ltc-pron, test page.
 
-Credentials: create a bot password at Special:BotPasswords with the grants
-"Edit existing pages" and "Create, edit, and move pages", then put it in
-.env (gitignored) or the environment:
+  uv run scripts/wiki_deploy.py --user YourName          build, check, list
+  uv run scripts/wiki_deploy.py --user YourName --copy   also walk through them:
+      each page's text goes to the clipboard and its edit page opens in the
+      browser; paste over the whole edit box, save, press Enter for the next
+  uv run scripts/wiki_deploy.py --user YourName --pages 生病 重 東
+
+The username can also come from WIKTIONARY_USER in .env (gitignored).
+
+--upload saves the pages through the API instead, with a bot password from
+Special:BotPasswords (grants "Edit existing pages" and "Create, edit, and
+move pages") in .env:
 
   WIKTIONARY_BOT_USER=YourName@ltc-pron
   WIKTIONARY_BOT_PASSWORD=...
-
-Usage:
-  uv run scripts/wiki_deploy.py --dry-run --user YourName   build + local check only
-  uv run scripts/wiki_deploy.py                             build, check, upload
-  uv run scripts/wiki_deploy.py --pages 生病 重 東           choose test pages
 """
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
+import webbrowser
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
@@ -199,44 +207,95 @@ class Wiki:
         return "created" if result.get("new") else "updated"
 
 
+CLIPBOARD_COMMANDS = [
+    ["wl-copy"],
+    ["xclip", "-selection", "clipboard"],
+    ["xsel", "--clipboard", "--input"],
+    ["pbcopy"],
+]
+
+
+def copy_to_clipboard(text: str) -> bool:
+    for cmd in CLIPBOARD_COMMANDS:
+        if shutil.which(cmd[0]):
+            subprocess.run(cmd, input=text, text=True, check=True)
+            return True
+    return False
+
+
+def edit_url(title: str) -> str:
+    return f"https://en.wiktionary.org/w/index.php?title={quote(title, safe=':/')}&action=edit"
+
+
+def file_names(built: dict[str, str]) -> dict[str, str]:
+    """Title -> file name in build/userspace, numbered in paste order."""
+    names = {}
+    for i, title in enumerate(built, 1):
+        if title.endswith("/predict"):
+            names[title] = f"{i}-predict.lua"
+        elif title.startswith("Module:"):
+            names[title] = f"{i}-ltc-pron.lua"
+        else:
+            names[title] = f"{i}-test-page.wiki"
+    return names
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dry-run", action="store_true", help="build and check locally; no login or upload")
-    ap.add_argument("--user", help="Wiktionary username (default: from WIKTIONARY_BOT_USER)")
+    ap.add_argument("--user", help="your Wiktionary username (default: WIKTIONARY_USER in .env)")
     ap.add_argument("--pages", nargs="+", default=DEFAULT_PAGES, help="pages for the test page")
+    ap.add_argument("--copy", action="store_true",
+                    help="copy each page to the clipboard and open its edit page, one at a time")
+    ap.add_argument("--upload", action="store_true", help="save through the API with a bot password")
     args = ap.parse_args()
 
     load_env()
     bot_user = os.environ.get("WIKTIONARY_BOT_USER", "")
-    user = args.user or bot_user.split("@", 1)[0]
+    user = args.user or os.environ.get("WIKTIONARY_USER") or bot_user.split("@", 1)[0]
     if not user:
-        sys.exit("set WIKTIONARY_BOT_USER (in .env or the environment) or pass --user")
+        sys.exit("pass --user YourName, or set WIKTIONARY_USER in .env")
 
     ver = version()
+    summary = f"Sync from {ver}"
     built = build(user)
     built[f"User:{user}/ltc-pron"] = test_page(user, args.pages, ver)
-
-    BUILD.mkdir(parents=True, exist_ok=True)
-    for title, text in built.items():
-        ext = ".lua" if title.startswith("Module:") else ".wiki"
-        (BUILD / (title.replace("/", "∕").replace(":", "꞉") + ext)).write_text(text)
-    print(f"Built {len(built)} pages into {BUILD.relative_to(ROOT)}")
 
     print("Checking the built modules locally:")
     check_locally(user, built, args.pages)
 
-    if args.dry_run:
-        print("Dry run: nothing uploaded.")
+    if BUILD.exists():
+        shutil.rmtree(BUILD)
+    BUILD.mkdir(parents=True)
+    names = file_names(built)
+    for title, text in built.items():
+        (BUILD / names[title]).write_text(text)
+
+    if args.upload:
+        password = os.environ.get("WIKTIONARY_BOT_PASSWORD")
+        if not bot_user or not password:
+            sys.exit("set WIKTIONARY_BOT_USER and WIKTIONARY_BOT_PASSWORD (see Special:BotPasswords)")
+        wiki = Wiki(bot_user, password)
+        for title, text in built.items():
+            print(f"  {title}: {wiki.save(title, text, summary)}")
+        print(f"Test page: https://en.wiktionary.org/wiki/User:{user}/ltc-pron")
         return
 
-    password = os.environ.get("WIKTIONARY_BOT_PASSWORD")
-    if not bot_user or not password:
-        sys.exit("set WIKTIONARY_BOT_USER and WIKTIONARY_BOT_PASSWORD (see Special:BotPasswords)")
-    wiki = Wiki(bot_user, password)
-    summary = f"Sync from {ver}"
-    for title, text in built.items():
-        print(f"  {title}: {wiki.save(title, text, summary)}")
-    print(f"Test page: https://en.wiktionary.org/wiki/User:{user}/ltc-pron")
+    print(f"\nBuilt {len(built)} pages in {BUILD.relative_to(ROOT)}. Paste each over the whole")
+    print(f"edit box, in this order, with the edit summary:\n  {summary}\n")
+    for title in built:
+        print(f"  {title}")
+        print(f"    edit: {edit_url(title)}")
+        print(f"    file: {(BUILD / names[title]).relative_to(ROOT)}")
+
+    if args.copy:
+        print()
+        for i, (title, text) in enumerate(built.items(), 1):
+            if not copy_to_clipboard(text):
+                sys.exit("no clipboard tool found (wl-copy, xclip, xsel or pbcopy)")
+            webbrowser.open(edit_url(title))
+            input(f"[{i}/{len(built)}] {title} is on the clipboard and its edit page is open. "
+                  "Paste, save, then press Enter… ")
+    print(f"\nTest page: https://en.wiktionary.org/wiki/User:{user}/ltc-pron")
 
 
 if __name__ == "__main__":
