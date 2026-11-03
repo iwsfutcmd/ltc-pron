@@ -1093,6 +1093,10 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif final == 141 and (initial == 15 or initial == 17) then
 		final_result = "Am"
 
+	-- 曷 after 影 and 疑: Cantonese has no ot or ngot. 遏 頞 aat3, 歹 ngaat6
+	elseif final == 63 and (initial == 31 or initial == 34) then
+		final_result = "An"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
