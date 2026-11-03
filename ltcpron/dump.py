@@ -4,6 +4,8 @@ Writes JSONL files to data/extracted/:
   ltc-pron.jsonl   {"char", "readings"|"alias"}   Module:zh/data/ltc-pron/<char>
   dial-pron.jsonl  {"char", "rows"|"alias"}       Module:zh/data/dial-pron/<char>
   zh-pron.jsonl    {"title", "templates"}         {{zh-pron}} calls in main namespace
+  han.jsonl        {"char", "ids", "compounds"}   {{Han char}} ids= and {{Han compound}}
+                                                  params on single-character pages
 
 Module data is evaluated in an empty Lua environment, so it can only build
 tables, not touch globals, io or os.
@@ -149,14 +151,15 @@ def split_params(body: str) -> dict[str, str]:
 def main(dump: Path) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     lua = LuaData()
-    counts = {"ltc-pron": 0, "dial-pron": 0, "zh-pron": 0, "errors": 0}
-    names = ["ltc-pron.jsonl", "dial-pron.jsonl", "zh-pron.jsonl", "errors.jsonl"]
+    counts = {"ltc-pron": 0, "dial-pron": 0, "zh-pron": 0, "han": 0, "errors": 0}
+    names = ["ltc-pron.jsonl", "dial-pron.jsonl", "zh-pron.jsonl", "han.jsonl", "errors.jsonl"]
     # Write to .partial files and rename at the end, so readers never see
     # half-written output.
     partial = {n: OUT / f"{n}.partial" for n in names}
     with (open(partial["ltc-pron.jsonl"], "w") as ltc,
           open(partial["dial-pron.jsonl"], "w") as dial,
           open(partial["zh-pron.jsonl"], "w") as zh,
+          open(partial["han.jsonl"], "w") as han,
           open(partial["errors.jsonl"], "w") as errs):
         for ns, title, text in iter_pages(dump):
             if ns == 828 and title.startswith((LTC_PREFIX, DIAL_PREFIX)):
@@ -181,11 +184,19 @@ def main(dump: Path) -> None:
                 else:
                     dial.write(json.dumps({"char": char, "rows": val}, ensure_ascii=False) + "\n")
                     counts["dial-pron"] += 1
-            elif ns == 0 and "zh-pron" in text:
-                templates = [split_params(b) for b in template_calls(text, "zh-pron")]
-                if templates:
-                    zh.write(json.dumps({"title": title, "templates": templates}, ensure_ascii=False) + "\n")
-                    counts["zh-pron"] += 1
+            elif ns == 0:
+                if "zh-pron" in text:
+                    templates = [split_params(b) for b in template_calls(text, "zh-pron")]
+                    if templates:
+                        zh.write(json.dumps({"title": title, "templates": templates}, ensure_ascii=False) + "\n")
+                        counts["zh-pron"] += 1
+                if len(title) == 1 and "{{Han " in text:
+                    ids = [split_params(b).get("ids", "") for b in template_calls(text, "Han char")]
+                    compounds = [split_params(b) for b in template_calls(text, "Han compound")]
+                    if any(ids) or compounds:
+                        han.write(json.dumps({"char": title, "ids": [i for i in ids if i],
+                                              "compounds": compounds}, ensure_ascii=False) + "\n")
+                        counts["han"] += 1
     for n, p in partial.items():
         p.replace(OUT / n)
     print(counts)
