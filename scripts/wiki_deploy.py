@@ -101,10 +101,25 @@ def build(user: str) -> dict[str, str]:
         sys.exit("build: modules/ltc-pron.lua does not end with `return export`")
     pron = body + "\n" + SHOW.replace("USER", user) + "\nreturn export\n"
 
+    tests = (MODULES / "ltc-pron" / "predict" / "testcases.lua").read_text()
+    tests = replace_once(tests, 'require("Module:ltc-pron/predict")',
+                         f'require("Module:User:{user}/ltc-pron/predict")')
+    tests = replace_once(tests, 'require("Module:ltc-pron")', f'require("Module:User:{user}/ltc-pron")')
+
     return {
         f"Module:User:{user}/ltc-pron/predict": predict,
         f"Module:User:{user}/ltc-pron": pron,
+        f"Module:User:{user}/ltc-pron/predict/testcases": tests,
     }
+
+
+def testcases_page(user: str, version: str) -> str:
+    return (f"Testcases for [[Module:User:{user}/ltc-pron/predict]], synced from {version}.\n\n"
+            f"{{{{#invoke:User:{user}/ltc-pron/predict/testcases|run_tests}}}}\n")
+
+
+def proposal_page(user: str) -> str:
+    return (ROOT / "docs" / "proposal.wiki").read_text().replace("USER", user)
 
 
 def test_page(user: str, pages: list[str], version: str) -> str:
@@ -149,6 +164,26 @@ def check_locally(user: str, built: dict[str, str], pages: list[str]) -> None:
                 sys.exit(f"local check: no table rendered for {page}")
             coll = 'title="colloquial"' in out
             print(f"  {page}: table OK" + (", with colloquial forms" if coll else ", literary only"))
+
+        lua.execute('''
+            package.preload["Module:UnitTests"] = function()
+                local t = { failed = {}, total = 0 }
+                function t:equals(name, actual, expected)
+                    self.total = self.total + 1
+                    if actual ~= expected then
+                        table.insert(self.failed, table.concat(name, " | ") .. ": " .. tostring(actual))
+                    end
+                end
+                return t
+            end
+        ''')
+        tests = rt.require(f"Module:User:{user}/ltc-pron/predict/testcases")
+        for key in [k for k in tests if str(k).startswith("test_")]:
+            tests[key](tests)
+        failed = list(tests.failed.values())
+        if failed:
+            sys.exit("local check: testcases failed:\n  " + "\n  ".join(failed))
+        print(f"  testcases: {tests.total} cases pass")
 
 
 def load_env() -> None:
@@ -304,8 +339,12 @@ textarea { width: 100%; height: 260px; margin-top: 8px; font-family: var(--font-
 $steps
   </ol>
   <div class="final">
-    <a class="btn primary" href="$test_url">Open the test page</a>
-    <p>It renders the Middle Chinese table for $test_pages, each under a heading that links to the live entry.</p>
+    <div class="actions">
+      <a class="btn primary" href="$test_url">Open the test page</a>
+      <a class="btn secondary" href="$testcases_url">Open the testcases</a>
+      <a class="btn secondary" href="$proposal_url">Open the proposal draft</a>
+    </div>
+    <p>The test page renders the Middle Chinese table for $test_pages, each under a heading that links to the live entry. The testcases page runs every case in <code>predict/testcases</code>. The proposal draft is the text to post for other editors; it links to both.</p>
   </div>
   <p class="summary-line">Edit summary used: <code>$summary</code></p>
 </main>
@@ -370,21 +409,21 @@ def deploy_page(user: str, built: dict[str, str], names: dict[str, str], summary
         user=html.escape(user), steps=steps, summary=html.escape(summary),
         commit_url=html.escape(commit_url), commit_label=html.escape(commit_url.rsplit("/", 1)[-1]),
         test_url=html.escape(view_url(f"User:{user}/ltc-pron")),
+        testcases_url=html.escape(view_url(f"User:{user}/ltc-pron/testcases")),
+        proposal_url=html.escape(view_url(f"User:{user}/ltc-pron/proposal")),
         test_pages=html.escape(" ".join(pages)),
     )
 
 
 def file_names(built: dict[str, str]) -> dict[str, str]:
     """Title -> file name in build/userspace, numbered in paste order."""
-    names = {}
-    for i, title in enumerate(built, 1):
-        if title.endswith("/predict"):
-            names[title] = f"{i}-predict.lua"
-        elif title.startswith("Module:"):
-            names[title] = f"{i}-ltc-pron.lua"
-        else:
-            names[title] = f"{i}-test-page.wiki"
-    return names
+    def stem(title):
+        kind = "module" if title.startswith("Module:") else "page"
+        tail = title.split("/ltc-pron", 1)[1]
+        return {("module", "/predict"): "predict.lua", ("module", ""): "ltc-pron.lua",
+                ("module", "/predict/testcases"): "testcases.lua", ("page", ""): "test-page.wiki",
+                ("page", "/testcases"): "testcases-page.wiki", ("page", "/proposal"): "proposal.wiki"}[(kind, tail)]
+    return {title: f"{i}-{stem(title)}" for i, title in enumerate(built, 1)}
 
 
 def main():
@@ -406,6 +445,8 @@ def main():
     summary = f"Sync from {ver}"
     built = build(user)
     built[f"User:{user}/ltc-pron"] = test_page(user, args.pages, ver)
+    built[f"User:{user}/ltc-pron/testcases"] = testcases_page(user, ver)
+    built[f"User:{user}/ltc-pron/proposal"] = proposal_page(user)
 
     print("Checking the built modules locally:")
     check_locally(user, built, args.pages)

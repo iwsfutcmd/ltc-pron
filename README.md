@@ -44,8 +44,12 @@ This writes `data/extracted/`: Middle Chinese readings, dial-pron data,
 | `yue_stacking.py` | readings where two colloquial rules apply |
 | `yue_compare.py [REV]` | working-tree modules vs a revision: readings gained and lost |
 | `yue_tally.py` | attested outcomes for a slice of Middle Chinese |
+| `yue_main_misses.py` | main readings of common characters that neither layer predicts |
+| `yue_phonotactics.py` | predicted syllables Cantonese does not have |
+| `yue_xi.py` | the 溪 initial: where k- survives, and why |
 | `ltc_table.py PAGE…` | renders the Middle Chinese table for a page locally |
-| `wiki_deploy.py` | builds the modules for your Wiktionary userspace |
+| `make_testcases.py` | writes `modules/ltc-pron/predict/testcases.lua` and runs it locally |
+| `wiki_deploy.py` | builds the modules, testcases and proposal for your Wiktionary userspace |
 
 Run them with `uv run python scripts/<name>`.
 
@@ -57,15 +61,20 @@ paste into Wiktionary by hand:
 - `Module:User:<you>/ltc-pron/predict`
 - `Module:User:<you>/ltc-pron`, which requires the userspace predict and adds a
   `show` entry point: `{{#invoke:User:<you>/ltc-pron|show|生病}}`
+- `Module:User:<you>/ltc-pron/predict/testcases`, the testcases, run by
+  `User:<you>/ltc-pron/testcases`
 - `User:<you>/ltc-pron`, a test page rendering the table for a list of pages
+- `User:<you>/ltc-pron/proposal`, the proposal for other editors
+  ([docs/proposal.wiki](docs/proposal.wiki))
 
 ```sh
 uv run scripts/wiki_deploy.py --user YourName
 ```
 
-checks the built modules locally on the test pages, writes them to
-`build/userspace/` (`1-predict.lua`, `2-ltc-pron.lua`, `3-test-page.wiki`) and
-prints each page's edit link and the edit summary to use. Paste each file over
+checks the built modules locally on the test pages and runs the testcases,
+writes everything to `build/userspace/` (numbered in paste order, plus an
+`index.html` with copy buttons and edit links) and prints each page's edit link
+and the edit summary to use. Paste each file over
 the whole edit box, in that order, and save. Add `--copy` to be walked through
 them: each page's text goes to the clipboard and its edit page opens in the
 browser, and Enter moves to the next. `--pages 生 重 …` chooses the test pages;

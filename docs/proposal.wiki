@@ -1,0 +1,75 @@
+== Colloquial Cantonese reflexes and fixes to the expected reflexes in [[Module:ltc-pron/predict]] ==
+I'd like to propose changes to the "Expected Cantonese Reflex" row of the Middle Chinese table. They add the colloquial (白讀) reflex where it differs from the literary one, and fix a set of places where the literary prediction is wrong. Everything is in my userspace for testing, and each change is separable.
+
+=== What changes ===
+'''1. Colloquial reflex.''' A new <code>predict_yue_coll</code> gives the expected colloquial reflex, or nothing where it would equal the literary one. The table shows it in the same cell after a slash, with a "colloquial" tooltip: [[生#Chinese|生]] ''sang<sup>1</sup> / saang<sup>1</sup>'', [[重#Chinese|重]] (上) ''zung<sup>6</sup> / cung<sup>5</sup>''. Pages where no reading has a colloquial reflex look exactly as before. Six rules:
+{| class="wikitable"
+! Rule !! Examples !! Colloquial forms attested !! Share of words that are vernacular, literary form → colloquial form
+|-
+| 梗攝 II: ''-ang/-ak'' → ''-aang/-aak'' || [[生#Chinese|生]] saang1, [[白#Chinese|白]] baak6, [[客#Chinese|客]] haak3 || 159 of 401 (40%) || 4.2% → 11.6%
+|-
+| 梗攝 III–IV, open: ''-ing/-ik'' → ''-eng/-ek'' || [[病#Chinese|病]] beng6, [[石#Chinese|石]] sek6, [[尺#Chinese|尺]] cek3 || 75 of 645 (12%) || 2.9% → 15.3%
+|-
+| 全濁上: unaspirated tone 6 → aspirated tone 5 || [[重#Chinese|重]] cung5, [[舅#Chinese|舅]] kau5, [[市#Chinese|市]] si5 || 149 of 676 (22%) || 4.4% → 9.9%
+|-
+| 德: ''-ak'' → ''-aak'', tone kept || [[黑#Chinese|黑]] haak1, [[肋#Chinese|肋]] laak6 || 13 of 52 (25%) || 5.6% → 14.5%
+|-
+| 怗: ''-ip'' → ''-aap'' || [[疊#Chinese|疊]] daap6, [[頰#Chinese|頰]] gaap3 || 9 of 71 (13%) || 10.3% → 23.1%
+|-
+| 脂 after 心: ''-i'' → ''-ei'' || [[四#Chinese|四]] sei3, [[死#Chinese|死]] sei2 || 7 of 11 (64%) || 3.7% → 17.6%
+|}
+"Attested" means the form is among the Cantonese readings on the character's own page. The last column checks that each rule is a colloquial layer and not just a variant: across 240,868 character tokens in multi-character entries, a word counts as vernacular if it has a Cantonese reading but no Mandarin one. Every rule's forms are between two and five and a half times as likely as the literary forms to be in such words. Where a rule would produce a syllable Cantonese does not have (亦 *jek6, 寧 *neng4), no colloquial form is given. Where a 梗攝 rule and 全濁上 meet, one combined form is given ([[艇#Chinese|艇]] teng5), never a list.
+
+'''2. Literary fixes.''' Each is a condition that holds across a class of characters, found either from a cluster of predictions that are not possible Cantonese syllables, or from characters where Mandarin disagrees with the expected reflex in the same way:
+{| class="wikitable"
+! Fix !! Examples !! Attested readings gained / lost
+|-
+| 眞 after 來, and after 精組 outside 入: ''-an/-at'' → ''-eon/-eot'' || [[鄰#Chinese|鄰]] leon4, [[進#Chinese|進]] zeon3, [[栗#Chinese|栗]] leot6 || +61 / −5 (辛 新 薪 親)
+|-
+| 月合 and 乏 after voiced labials: ''-aat'' → ''-at'' || [[罰#Chinese|罰]] fat6, [[襪#Chinese|襪]] mat6 || +12 / −2
+|-
+| 緝 after 從 and 邪: ''-ap'' → ''-aap'' || [[集#Chinese|集]] [[習#Chinese|習]] zaap6 || +11 / −3
+|-
+| 見 before ''-yut'', ''-ut'' is aspirated (no gyut, gut) || [[決#Chinese|決]] kyut3, [[括#Chinese|括]] kut3 || +34 / −3
+|-
+| 曷 after 影 and 疑: ''-ot'' → ''-aat'' (no ot, ngot) || [[遏#Chinese|遏]] aat3, [[歹#Chinese|歹]] ngaat6 || +8 / 0
+|-
+| 咍 after labials: ''-oi'' → ''-ui'' (no boi, poi, moi) || [[俖#Chinese|俖]] pui2; colloquial [[倍#Chinese|倍]] pui5 || +3 / 0
+|-
+| w- before ''-ak'' → ''-aak'' (no wak) || [[或#Chinese|或]] [[惑#Chinese|惑]] waak6 || +7 / 0
+|-
+| 崇 before open 止, rising and departing tones: z- → s- (Mandarin ''shì'') || [[事#Chinese|事]] [[士#Chinese|士]] si6 || +4 / 0
+|-
+| 以 before rounded 清 and 昔 stays unrounded (Mandarin ''yíng, yì'') || [[營#Chinese|營]] jing4, [[役#Chinese|役]] jik6 || +10 / 0
+|-
+| rounded 佳: ''-aai'' → ''-aa'' (rounded 皆 keeps ''-aai'', as in Mandarin) || [[卦#Chinese|卦]] gwaa3, [[畫#Chinese|畫]] waa6 || +11 / −1
+|-
+| 覺 after voiceless 知 and 徹: ''-ok'' → ''-oek'' || [[卓#Chinese|卓]] [[桌#Chinese|桌]] zoek3, [[踔#Chinese|踔]] coek3 || +8 / 0
+|-
+| 溪 keeps its stop before open 藥 (no hoek) || [[卻#Chinese|卻]] koek3 || +1 / 0
+|}
+
+'''3. A rule that never ran.''' The module already turns 溪 into j- before 尤, 侵 and 緝, but that test comes after the h- test in the same <code>if/elseif</code> chain, and every final is on the h- list. Taking those finals off the list lets it run: [[丘#Chinese|丘]] jau1, [[欽#Chinese|欽]] jam1, [[泣#Chinese|泣]] jap1 (+13 / −2).
+
+=== Effect ===
+* Main reading of common characters (the reading used in the most Wiktionary words, for 4,106 characters in at least three words): '''76.1% → 79.7%''' predicted (77.2% by the literary reflex alone).
+* All Cantonese readings on character pages: 62.7% → 66.0%.
+* 421 of 25,609 MC readings get a different literary reflex; 2,859 get a colloquial one.
+* <code>predict_cmn</code> is untouched: Mandarin output is identical for all 25,609 readings.
+
+=== Deliberately not changed ===
+* '''溪 keeping k-''' ([[區#Chinese|區]] keoi1, [[曲#Chinese|曲]] kuk1). No property of the syllable decides where it happens, the same words have k- in Taishanese, and both literary and colloquial readings otherwise have h- ([[克#Chinese|克]] hak1 / haak1). It is word-by-word, so the expected reflex stays h-/f-. A list of finals that kept k- was tried and dropped.
+* '''Changed tones''' (變音: [[貓#Chinese|貓]] maau1) and '''readings copied from a phonetic''' ([[級#Chinese|級]] kap1): word-level, not predictable from Middle Chinese.
+* '''梗攝 II stays ''-ang/-ak'' in the literary reflex''', although ''-aang/-aak'' is commoner in words: the expected reflex follows the sound change, not frequency.
+
+=== How to review ===
+* Test page: [[User:USER/ltc-pron]] shows the table, with the change, for a range of characters; compare with the live entries linked from each heading.
+* Testcases: [[User:USER/ltc-pron/testcases]], 98 cases. The live module fails 19 of the 49 literary cases, exactly the fixes above.
+* Diffs against the live modules: [{{fullurl:Special:ComparePages|page1=Module:ltc-pron/predict&page2=Module:User:USER/ltc-pron/predict}} predict], [{{fullurl:Special:ComparePages|page1=Module:ltc-pron&page2=Module:User:USER/ltc-pron}} ltc-pron] (the userspace <code>ltc-pron</code> also has a <code>show</code> function for the test page, which would not be copied over).
+* Method and data: https://github.com/iwsfutcmd/ltc-pron. The modules were run unchanged under Lua 5.1 against the November 2026 dump, and every change was measured against the attested readings before it went in.
+
+=== Questions ===
+# Is the slash with a tooltip clear enough, or should the colloquial form be labelled in the cell or the row header?
+# Any of the fixes you would rather not take? They are independent.
+# The common characters whose Cantonese ''and'' Mandarin readings fit none of their listed 廣韻 readings ([[打#Chinese|打]], [[話#Chinese|話]], [[母#Chinese|母]], [[富#Chinese|富]], [[哈#Chinese|哈]], [[熊#Chinese|熊]] …) show an expected reflex for a word nobody uses. Should the data modules get a note or the later reading for these?
+~~~~
