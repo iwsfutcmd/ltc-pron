@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 溪 initial in Cantonese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one reading column (~68ch); charts and tables widen to 960px.
+   Two hues: the stop kept (k-/kw-, ink blue) and the stop lost (h-/f-, vermilion). */
+:root {
+  color-scheme: light;
+  --paper: #f7f8f9; --surface: #ffffff; --ink: #15181d; --ink-2: #4a505a; --muted: #737983;
+  --rule: #dfe2e6; --k: #3348a8; --h: #c4410f; --k-wash: #e7ebf7; --h-wash: #f9e4da;
+  --rest: #e3e5e8; --code-bg: #f0f2f4; --focus: #3348a8;
+  --font-display: "Newsreader", "Noto Serif TC", Georgia, serif;
+  --font-body: "IBM Plex Sans", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-han: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0f1114; --surface: #15171b; --ink: #e9ebee; --ink-2: #b4b9c2; --muted: #8a909a;
+    --rule: #2a2e35; --k: #6d84e0; --h: #e0703a; --k-wash: #1d2335; --h-wash: #33201a;
+    --rest: #2a2d33; --code-bg: #1b1e23; --focus: #8fa3f0;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0f1114; --surface: #15171b; --ink: #e9ebee; --ink-2: #b4b9c2; --muted: #8a909a;
+  --rule: #2a2e35; --k: #6d84e0; --h: #e0703a; --k-wash: #1d2335; --h-wash: #33201a;
+  --rest: #2a2d33; --code-bg: #1b1e23; --focus: #8fa3f0;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16.5px; line-height: 1.6; }
+main { padding: 48px 20px 96px; }
+.col { max-width: 68ch; margin: 0 auto; }
+.wide { max-width: 960px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2.6rem; }
+h2 { font-size: 1.75rem; margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--rule); }
+p { margin: 14px 0 0; }
+.kicker { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); margin: 0 0 14px; }
+.lede { font-size: 1.15rem; color: var(--ink-2); margin-top: 18px; }
+a { color: var(--k); text-underline-offset: 2px; }
+a.wk { color: inherit; text-decoration: underline; text-decoration-color: var(--muted); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a.wk:hover, a.wk:focus-visible { color: var(--k); text-decoration-color: var(--k); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+:not(pre) > code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+.han { font-family: var(--font-han); }
+pre { margin: 16px 0 0; background: var(--code-bg); border-radius: 8px; padding: 16px 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; }
+pre .c { color: var(--muted); }
+pre .hl { display: block; background: var(--h-wash); margin: 0 -18px; padding: 0 18px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 32px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px 18px; }
+.tile .label { font-size: 0.85rem; color: var(--ink-2); }
+.tile .value { font-size: 1.9rem; font-weight: 600; margin-top: 4px; line-height: 1.15; }
+.tile .note { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 20px 22px; margin-top: 24px; }
+.panel h4 { margin: 0; font-size: 0.95rem; font-weight: 600; }
+.panel .sub { margin: 4px 0 0; font-size: 0.85rem; color: var(--ink-2); }
+.scroll { overflow-x: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 10px; font-size: 0.85rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* Onset distribution: one series */
+.bars { display: grid; gap: 12px; margin-top: 16px; }
+.bar-row { display: grid; grid-template-columns: 170px 1fr; gap: 6px 14px; align-items: center; }
+.bar-label { font-size: 0.88rem; }
+.bar-track { display: flex; align-items: center; gap: 8px; }
+.bar { height: 20px; border-radius: 0 4px 4px 0; flex: none; }
+.bar.one { background: var(--ink-2); }
+.bar-v { font-size: 0.82rem; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar-ex { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.ex { display: inline-flex; align-items: baseline; gap: 5px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 1px 8px; font-size: 0.82rem; }
+.ex .to { font-family: var(--font-mono); font-size: 0.8rem; }
+
+/* Per-final table */
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+th { font-weight: 600; font-size: 0.78rem; color: var(--ink-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.fin { white-space: nowrap; }
+td.fin .han { font-size: 0.95rem; }
+.chip { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; margin-left: 8px; vertical-align: 1px; }
+td.split { width: 30%; min-width: 120px; }
+.pair-bar { display: flex; gap: 2px; height: 14px; }
+.pair-bar .seg.k { background: var(--k); }
+.pair-bar .seg.h { background: var(--h); }
+.pair-bar > :last-child { border-radius: 0 3px 3px 0; }
+td.exs { font-size: 0.92rem; white-space: nowrap; }
+.none { color: var(--muted); }
+tbody tr:last-child td { border-bottom: 0; }
+
+/* Factors */
+tr.grp th { padding-top: 14px; color: var(--ink); font-size: 0.82rem; }
+td.share { width: 50%; }
+.share-track { position: relative; height: 12px; background: var(--rest); border-radius: 0 3px 3px 0; }
+.share-bar { height: 12px; background: var(--k); border-radius: 0 3px 3px 0; }
+.half { position: absolute; left: 50%; top: -3px; bottom: -3px; border-left: 1px dashed var(--ink-2); }
+
+/* Policies */
+tr.rec td { font-weight: 600; background: var(--k-wash); }
+td .note { display: block; color: var(--muted); font-size: 0.8rem; font-weight: 400; }
+
+.callout { margin-top: 24px; padding: 16px 20px; border-left: 3px solid var(--k); background: var(--surface); border-radius: 0 8px 8px 0; }
+.callout p:first-child { margin-top: 0; }
+
+#tip { position: fixed; z-index: 10; pointer-events: none; max-width: 300px; background: var(--ink); color: var(--paper); font-size: 0.8rem; line-height: 1.45; padding: 7px 10px; border-radius: 6px; opacity: 0; transition: opacity 0.12s; }
+#tip.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+@media (max-width: 640px) {
+  h1 { font-size: 2rem; }
+  .bar-row { grid-template-columns: 1fr; }
+  .bar-ex { grid-column: 1; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="col">
+  <p class="kicker">Module:ltc-pron/predict · open question · 2 November 2026</p>
+  <h1>The <span class="han">溪</span> initial in Cantonese</h1>
+  <p class="lede">Middle Chinese 溪 was an aspirated velar stop, kʰ-. Cantonese usually turned it into h-, or f- before rounded vowels, but about a third of attested readings keep k- or kw-. The working copy of <code>predict_yue</code> keeps k- before 14 finals chosen from the data. This page sets out the evidence and the choice to make before proposing the module upstream. Characters link to their Wiktionary entries.</p>
+</header>
+
+<section class="wide">
+  <div class="tiles">
+    <div class="tile"><div class="label">Attested 溪 readings with h- or f-</div><div class="value">49%</div><div class="note">of 460; 54% in common characters</div></div>
+    <div class="tile"><div class="label">With k- or kw-</div><div class="value">31%</div><div class="note">29% in common characters</div></div>
+    <div class="tile"><div class="label">Current 14-final list</div><div class="value">+85</div><div class="note">attested readings over upstream</div></div>
+    <div class="tile"><div class="label">Best any list of finals can do</div><div class="value">+134</div><div class="note">choosing each final with hindsight</div></div>
+  </div>
+</section>
+
+<section class="col">
+  <h2>What happened to 溪</h2>
+  <p>溪 is the Middle Chinese initial of <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%AA#Chinese">溪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8B#Chinese">開</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A3#Chinese">口</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8B%A6#Chinese">苦</a></span>: an aspirated velar stop, <span class="mono">kh-</span> in Baxter's transcription, still a stop in Mandarin (kāi, kǒu, kǔ). In Cantonese the stop mostly weakened to h-, and before rounded vowels that h- became f-, so 苦 is fu2 and 科 fo1. The change did not reach every word. Counting the attested readings of characters with a single 溪 reading:</p>
+</section>
+<section class="wide">
+  <div class="panel">
+    <h4>Attested onsets of 溪 characters</h4>
+    <p class="sub">340 characters with a single Middle Chinese reading, 460 attested Cantonese readings. Hover a bar for the figures in common characters (at least three Wiktionary words).</p>
+    <div class="bars">
+      <div class="bar-row" tabindex="0" data-tip="h- or f-: 224 of 460 attested readings (49%); in common characters 87 of 161 (54%)">
+        <div class="bar-label">h- or f-</div>
+        <div class="bar-track"><div class="bar one" style="width:100.0%"></div><span class="bar-v">224 · 49%</span></div>
+        <div class="bar-ex"><span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8B#Chinese">開</a></span><span class="to">hoi1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A3#Chinese">口</a></span><span class="to">hau2</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8E%BB#Chinese">去</a></span><span class="to">heoi3</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%8B%A6#Chinese">苦</a></span><span class="to">fu2</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A7%91#Chinese">科</a></span><span class="to">fo1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BF%AB#Chinese">快</a></span><span class="to">faai3</span></span></div>
+      </div>
+      <div class="bar-row" tabindex="0" data-tip="k- or kw-: 144 of 460 attested readings (31%); in common characters 46 of 161 (29%)">
+        <div class="bar-label">k- or kw-</div>
+        <div class="bar-track"><div class="bar one" style="width:64.3%"></div><span class="bar-v">144 · 31%</span></div>
+        <div class="bar-ex"><span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%AA#Chinese">溪</a></span><span class="to">kai1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8D%80#Chinese">區</a></span><span class="to">keoi1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9B%B2#Chinese">曲</a></span><span class="to">kuk1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a></span><span class="to">kwaa1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a></span><span class="to">kwan3</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%99%A7#Chinese">虧</a></span><span class="to">kwai1</span></span></div>
+      </div>
+      <div class="bar-row" tabindex="0" data-tip="g- or gw-, unaspirated: 46 of 460 attested readings (10%); in common characters 15 of 161 (9%)">
+        <div class="bar-label">g- or gw-, unaspirated</div>
+        <div class="bar-track"><div class="bar one" style="width:20.5%"></div><span class="bar-v">46 · 10%</span></div>
+        <div class="bar-ex"></div>
+      </div>
+      <div class="bar-row" tabindex="0" data-tip="j-, w- or none: 30 of 460 attested readings (7%); in common characters 10 of 161 (6%)">
+        <div class="bar-label">j-, w- or none</div>
+        <div class="bar-track"><div class="bar one" style="width:13.4%"></div><span class="bar-v">30 · 7%</span></div>
+        <div class="bar-ex"><span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%B8%98#Chinese">丘</a></span><span class="to">jau1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AC%BD#Chinese">欽</a></span><span class="to">jam1</span></span> <span class="ex"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%B3%A3#Chinese">泣</a></span><span class="to">jap1</span></span></div>
+      </div>
+      <div class="bar-row" tabindex="0" data-tip="other: 16 of 460 attested readings (3%); in common characters 3 of 161 (2%)">
+        <div class="bar-label">other</div>
+        <div class="bar-track"><div class="bar one" style="width:7.1%"></div><span class="bar-v">16 · 3%</span></div>
+        <div class="bar-ex"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="col">
+  <p>h- and f- are one outcome: the module produces f- from h- wherever the rhyme is rounded. Unaspirated g-/gw- (a tenth of readings) and the other outliers are not predicted by any policy below.</p>
+
+  <h2>What the module does</h2>
+  <p>Upstream, the table <code>debuccalisation_inducing_yue</code> lists all 160 final types, so every 溪 syllable gets h-, and the rounding rule later turns that h- into f- before rounded rhymes other than i. The prediction is h-/f- everywhere.</p>
+  <p>The working copy takes 14 finals off the list: those where attested k-/kw- outnumber h-/f- at least two to one, with at least three attestations. They are <span class="han">侯一開、唐一合、唐一合入、唐一開入、山二開入、支三合、江二開入、清三合、脂三合、虞三合、魂一合、麻二合、齊四合、齊四開</span>. (庚三開入 also meets the criterion, but its readings have kw- or gw-, which an open final cannot produce, so it stayed on the list.) Before them 溪 keeps k-, and the same rounding rule gives kw- (<span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a></span> kwaa1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a></span> kwan3).</p>
+  <p>The module also contains a rule that turns 溪 into j- before 尤 and 侵/緝, matching <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%B8%98#Chinese">丘</a></span> jau1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AC%BD#Chinese">欽</a></span> jam1 and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%B3%A3#Chinese">泣</a></span> jap1. It never runs: it sits in the same <code>if/elseif</code> chain after the h- test, and every final is on the h- list.</p>
+</section>
+<section class="wide">
+<pre><span class="hl">	if initial == 29 and debuccalisation_inducing_yue[final] then
+		initial_result = "h"</span>
+	elseif initial == 29 and (final == 136 or final >= 139 and final <= 142)   <span class="c">-- 尤, 侵, 緝: never reached</span>
+		or initial == 32 and (final == 136 or final == 57)
+		or initial == 33 and (labialisation_inducing_yue[final] or glide_inducing_yue[final])
+		or initial_result == "" and palatalisation_inducing_yue[final] then
+		initial_result = "j"
+	end</pre>
+</section>
+
+<section class="col">
+  <h2>Final by final</h2>
+  <p>For each final type with at least three attested readings that have either outcome, how often 溪 keeps the stop. Rows run from the finals that keep it most to those that lose it most; the 14 finals the working copy treats as k- finals are marked.</p>
+</section>
+<section class="wide">
+  <div class="panel scroll">
+    <div class="legend"><span><i style="background:var(--k)"></i>k- or kw- (stop kept)</span><span><i style="background:var(--h)"></i>h- or f- (stop lost)</span></div>
+    <table style="margin-top:12px">
+      <thead><tr><th>Final</th><th>Readings</th><th class="num">k/kw</th><th class="num">h/f</th><th>with k/kw</th><th>with h/f</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="fin"><span class="han">麻二合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:66.7%" tabindex="0" data-tip="麻二合: k-/kw- in 8, h-/f- in 0"><div class="seg k" style="flex:8"></div></div></td>
+          <td class="num">8</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A4%B8#Chinese">夸</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%AA%87#Chinese">誇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%8A%99#Chinese">銙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%AF%9E#Chinese">䯞</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A7%B1#Chinese">姱</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%AA%BB#Chinese">骻</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">唐一合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:75.0%" tabindex="0" data-tip="唐一合: k-/kw- in 8, h-/f- in 1"><div class="seg k" style="flex:8"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">8</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9B%A0#Chinese">曠</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A3%99#Chinese">壙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%BA%8A#Chinese">纊</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%8C#Chinese">矌</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%AF%91#Chinese">䯑</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">齊四開</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:83.3%" tabindex="0" data-tip="齊四開: k-/kw- in 8, h-/f- in 2"><div class="seg k" style="flex:8"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">8</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%AA#Chinese">溪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%95%9F#Chinese">啟</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%B0%BF#Chinese">谿</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%B8%82#Chinese">鸂</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B6%AE#Chinese">綮</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%92%85#Chinese">㒅</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%B0%BF#Chinese">谿</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B6%AE#Chinese">綮</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">魂一合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:66.7%" tabindex="0" data-tip="魂一合: k-/kw- in 7, h-/f- in 1"><div class="seg k" style="flex:7"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">7</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9B%B0#Chinese">困</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%A4#Chinese">坤</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A3%BC#Chinese">壼</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%AB%A1#Chinese">髡</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%AB#Chinese">閫</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B6%83#Chinese">涃</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%87%97#Chinese">臗</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">侯一開</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:75.0%" tabindex="0" data-tip="侯一開: k-/kw- in 7, h-/f- in 2"><div class="seg k" style="flex:7"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">7</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AF%87#Chinese">寇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A9#Chinese">叩</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%87%A6#Chinese">釦</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%BD%84#Chinese">彄</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9E%89#Chinese">瞉</a> <a class="wk" href="https://en.wiktionary.org/wiki/%F0%A1%A8%A5#Chinese">𡨥</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%A3#Chinese">口</a> <a class="wk" href="https://en.wiktionary.org/wiki/%F0%A4%98%98#Chinese">𤘘</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">齊四合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:100.0%" tabindex="0" data-tip="齊四合: k-/kw- in 8, h-/f- in 4"><div class="seg k" style="flex:8"></div><div class="seg h" style="flex:4"></div></div></td>
+          <td class="num">8</td><td class="num">4</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A5%8E#Chinese">奎</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9D%BD#Chinese">睽</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%9D%B0#Chinese">蝰</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%81%A7#Chinese">聧</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%96%AF#Chinese">䖯</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%AF%93#Chinese">䯓</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A5%8E#Chinese">奎</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%9D%B0#Chinese">蝰</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%A5%8F#Chinese">楏</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A8%92#Chinese">㨒</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">江二開入</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="江二開入: k-/kw- in 5, h-/f- in 1"><div class="seg k" style="flex:5"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">5</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A2%BA#Chinese">確</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A1%99#Chinese">塙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%84%A8#Chinese">愨</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A2%BB#Chinese">碻</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9F%86#Chinese">埆</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AE%BC#Chinese">殼</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">山二開入</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="山二開入: k-/kw- in 4, h-/f- in 0"><div class="seg k" style="flex:4"></div></div></td>
+          <td class="num">4</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E3%93%A4#Chinese">㓤</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8A%BC#Chinese">劼</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%82%92#Chinese">䂒</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A1%88#Chinese">硈</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">支三合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="支三合: k-/kw- in 4, h-/f- in 0"><div class="seg k" style="flex:4"></div></div></td>
+          <td class="num">4</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%99%A7#Chinese">虧</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%B7%AC#Chinese">跬</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%A0%8D#Chinese">頍</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">清三合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="清三合: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%82%BE#Chinese">傾</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A9%A9#Chinese">㩩</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%94%9B#Chinese">䔛</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">脂三合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="脂三合: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B0%AF#Chinese">尯</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%99%A1#Chinese">䙡</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">虞三合</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="虞三合: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%BB%80#Chinese">軀</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B6%87#Chinese">嶇</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%A7%A2#Chinese">䧢</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">唐一合入</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="唐一合入: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BB%93#Chinese">廓</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B1%97#Chinese">籗</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9E%B9#Chinese">鞹</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">唐一開入</span><span class="chip">keeps k- now</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="唐一開入: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%AA#Chinese">恪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A4%A9#Chinese">㤩</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%84%99#Chinese">愙</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">庚三開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="庚三開入: k-/kw- in 3, h-/f- in 0"><div class="seg k" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">0</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9A%99#Chinese">隙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%83%A4#Chinese">郤</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B6%8C#Chinese">綌</a></span></td><td class="exs"><span class="none">–</span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">魚三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="魚三開: k-/kw- in 4, h-/f- in 2"><div class="seg k" style="flex:4"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">4</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%98%B9#Chinese">阹</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A2%AA#Chinese">袪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%F0%A5%AC%94#Chinese">𥬔</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%AD%95#Chinese">㭕</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A2%9F#Chinese">墟</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A0%8A#Chinese">㠊</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">宵三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="宵三開: k-/kw- in 2, h-/f- in 1"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">2</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E3%9A%81#Chinese">㚁</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9E%BD#Chinese">鞽</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A9%87#Chinese">橇</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">先四開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="先四開入: k-/kw- in 2, h-/f- in 1"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">2</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%88#Chinese">挈</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%BC%A4#Chinese">㼤</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%88#Chinese">挈</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">耕二開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="耕二開入: k-/kw- in 2, h-/f- in 1"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:1"></div></div></td>
+          <td class="num">2</td><td class="num">1</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%B7%99#Chinese">緙</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%B7%99#Chinese">緙</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">庚二開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="庚二開入: k-/kw- in 3, h-/f- in 3"><div class="seg k" style="flex:3"></div><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">3</td><td class="num">3</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%96%80#Chinese">喀</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%8F%A2#Chinese">揢</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AE%A2#Chinese">客</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%96%80#Chinese">喀</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">冬一開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="冬一開入: k-/kw- in 2, h-/f- in 2"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%85%B7#Chinese">酷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9A%B3#Chinese">嚳</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%85%B7#Chinese">酷</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">東三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="東三開: k-/kw- in 2, h-/f- in 2"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">2</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A9%B9#Chinese">穹</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8A%8E#Chinese">芎</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A9%B9#Chinese">穹</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8A%8E#Chinese">芎</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">桓一合入</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="桓一合入: k-/kw- in 1, h-/f- in 2"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">1</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%9B%9E#Chinese">蛞</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%97%8A#Chinese">闊</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%9B%9E#Chinese">蛞</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">宵三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="宵三開: k-/kw- in 1, h-/f- in 2"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:2"></div></div></td>
+          <td class="num">1</td><td class="num">2</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%B9%91#Chinese">繑</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%B9%BA#Chinese">蹺</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B9%91#Chinese">繑</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">歌一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="歌一開: k-/kw- in 1, h-/f- in 3"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">1</td><td class="num">3</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E4%AF%8A#Chinese">䯊</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%8F%AF#Chinese">可</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B2%A2#Chinese">岢</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">談一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="談一開: k-/kw- in 1, h-/f- in 3"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">1</td><td class="num">3</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%A9#Chinese">坩</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%9E%B0#Chinese">瞰</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%A9#Chinese">坩</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">青四開</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="青四開: k-/kw- in 1, h-/f- in 3"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">1</td><td class="num">3</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AC%A6#Chinese">謦</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%BD%84#Chinese">罄</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A3%AC#Chinese">磬</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%AC%A6#Chinese">謦</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">陽三合</span></td>
+          <td class="split"><div class="pair-bar" style="width:91.7%" tabindex="0" data-tip="陽三合: k-/kw- in 4, h-/f- in 7"><div class="seg k" style="flex:4"></div><div class="seg h" style="flex:7"></div></div></td>
+          <td class="num">4</td><td class="num">7</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A1%86#Chinese">框</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9C%B6#Chinese">眶</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AD%90#Chinese">筐</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A1%86#Chinese">框</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8C%A1#Chinese">匡</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9C%B6#Chinese">眶</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AD%90#Chinese">筐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B4%AD#Chinese">洭</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%87#Chinese">恇</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">蕭四開</span></td>
+          <td class="split"><div class="pair-bar" style="width:41.7%" tabindex="0" data-tip="蕭四開: k-/kw- in 1, h-/f- in 4"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:4"></div></div></td>
+          <td class="num">1</td><td class="num">4</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%AB%85#Chinese">竅</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%AB%85#Chinese">竅</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%83%BB#Chinese">郻</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A2%BD#Chinese">墽</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%84%A1#Chinese">鄡</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">夬二合</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="夬二合: k-/kw- in 0, h-/f- in 3"><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">0</td><td class="num">3</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BF%AB#Chinese">快</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%99%B2#Chinese">噲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%92%AF#Chinese">璯</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">脂三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="脂三開: k-/kw- in 0, h-/f- in 3"><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">0</td><td class="num">3</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A3%84#Chinese">棄</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A4%A1#Chinese">夡</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%9E%93#Chinese">㞓</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">仙三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:25.0%" tabindex="0" data-tip="仙三開: k-/kw- in 0, h-/f- in 3"><div class="seg h" style="flex:3"></div></div></td>
+          <td class="num">0</td><td class="num">3</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AD%B4#Chinese">譴</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%AA%88#Chinese">䪈</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%AD%A4#Chinese">䭤</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">唐一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:100.0%" tabindex="0" data-tip="唐一開: k-/kw- in 4, h-/f- in 8"><div class="seg k" style="flex:4"></div><div class="seg h" style="flex:8"></div></div></td>
+          <td class="num">4</td><td class="num">8</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%85%B7#Chinese">慷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%BC%89#Chinese">伉</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8C#Chinese">閌</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%8A%BA#Chinese">犺</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BA%B7#Chinese">康</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B3%A0#Chinese">糠</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%85%B7#Chinese">慷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%A7%BA#Chinese">槺</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%BC%AE#Chinese">漮</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%BA%BF#Chinese">躿</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">咸二開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="咸二開入: k-/kw- in 0, h-/f- in 4"><div class="seg h" style="flex:4"></div></div></td>
+          <td class="num">0</td><td class="num">4</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%B0#Chinese">恰</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%8E%90#Chinese">掐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B8%A2#Chinese">帢</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%81%8D#Chinese">䁍</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">肴二開</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="肴二開: k-/kw- in 0, h-/f- in 4"><div class="seg h" style="flex:4"></div></div></td>
+          <td class="num">0</td><td class="num">4</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E3%A4%8D#Chinese">㤍</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%B2%BE#Chinese">䲾</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%A0%9D#Chinese">頝</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A2%9D#Chinese">墝</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">桓一合</span></td>
+          <td class="split"><div class="pair-bar" style="width:33.3%" tabindex="0" data-tip="桓一合: k-/kw- in 0, h-/f- in 4"><div class="seg h" style="flex:4"></div></div></td>
+          <td class="num">0</td><td class="num">4</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%AC%BE#Chinese">款</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%AF%AC#Chinese">寬</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AA%BE#Chinese">窾</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">咍一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:91.7%" tabindex="0" data-tip="咍一開: k-/kw- in 3, h-/f- in 8"><div class="seg k" style="flex:3"></div><div class="seg h" style="flex:8"></div></div></td>
+          <td class="num">3</td><td class="num">8</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8B#Chinese">開</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%85%A8#Chinese">慨</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%96%8B#Chinese">開</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%87%B1#Chinese">凱</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%9A%8A#Chinese">㚊</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%A2%BD#Chinese">颽</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%84%B7#Chinese">愷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%9A%9F#Chinese">暟</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">灰一合</span></td>
+          <td class="split"><div class="pair-bar" style="width:58.3%" tabindex="0" data-tip="灰一合: k-/kw- in 1, h-/f- in 6"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:6"></div></div></td>
+          <td class="num">1</td><td class="num">6</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%9B%94#Chinese">盔</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A1%8A#Chinese">塊</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%AD%81#Chinese">魁</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%A2#Chinese">恢</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A9%BC#Chinese">詼</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%87%B7#Chinese">凷</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%9A%8D#Chinese">㚍</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">魂一合入</span></td>
+          <td class="split"><div class="pair-bar" style="width:41.7%" tabindex="0" data-tip="魂一合入: k-/kw- in 0, h-/f- in 5"><div class="seg h" style="flex:5"></div></div></td>
+          <td class="num">0</td><td class="num">5</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%AA%9F#Chinese">窟</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9F%BB#Chinese">矻</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A7%BE#Chinese">㧾</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%83%90#Chinese">胐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9C%A3#Chinese">圣</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">東一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:41.7%" tabindex="0" data-tip="東一開: k-/kw- in 0, h-/f- in 5"><div class="seg h" style="flex:5"></div></div></td>
+          <td class="num">0</td><td class="num">5</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AD%94#Chinese">孔</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AE%9C#Chinese">箜</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%9E%9A#Chinese">鞚</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A1%BF#Chinese">硿</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9F%AA#Chinese">埪</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">先四開</span></td>
+          <td class="split"><div class="pair-bar" style="width:41.7%" tabindex="0" data-tip="先四開: k-/kw- in 0, h-/f- in 5"><div class="seg h" style="flex:5"></div></div></td>
+          <td class="num">0</td><td class="num">5</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%B8%B4#Chinese">縴</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%AF%A0#Chinese">㯠</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%9C%B8#Chinese">蜸</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B2%8D#Chinese">岍</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">豪一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:66.7%" tabindex="0" data-tip="豪一開: k-/kw- in 1, h-/f- in 7"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:7"></div></div></td>
+          <td class="num">1</td><td class="num">7</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%9D%A0#Chinese">靠</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%80%83#Chinese">考</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%8A%92#Chinese">犒</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%B0%BB#Chinese">尻</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%A0%B2#Chinese">栲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%B4%98#Chinese">洘</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%B8%82#Chinese">丂</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">登一開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="登一開入: k-/kw- in 0, h-/f- in 6"><div class="seg h" style="flex:6"></div></div></td>
+          <td class="num">0</td><td class="num">6</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%85%8B#Chinese">克</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%88%BB#Chinese">刻</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%89%8B#Chinese">剋</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">仙三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="仙三開: k-/kw- in 0, h-/f- in 6"><div class="seg h" style="flex:6"></div></div></td>
+          <td class="num">0</td><td class="num">6</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%84%86#Chinese">愆</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%A8%AB#Chinese">騫</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%87%82#Chinese">䇂</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%97%94#Chinese">㗔</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%94%90#Chinese">攐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A4%B0#Chinese">褰</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">戈一合</span></td>
+          <td class="split"><div class="pair-bar" style="width:50.0%" tabindex="0" data-tip="戈一合: k-/kw- in 0, h-/f- in 6"><div class="seg h" style="flex:6"></div></div></td>
+          <td class="num">0</td><td class="num">6</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%A1%86#Chinese">顆</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AA%A0#Chinese">窠</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%9D%8C#Chinese">蝌</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%95%A4#Chinese">敤</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%96%96#Chinese">薖</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%AA%99#Chinese">㪙</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">之三開</span></td>
+          <td class="split"><div class="pair-bar" style="width:91.7%" tabindex="0" data-tip="之三開: k-/kw- in 2, h-/f- in 9"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:9"></div></div></td>
+          <td class="num">2</td><td class="num">9</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%AD%8C#Chinese">魌</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%94%AD#Chinese">唭</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%B5%B7#Chinese">起</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%AC%BA#Chinese">欺</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%8A%91#Chinese">芑</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%A8%B8#Chinese">娸</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%83%9B#Chinese">僛</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%AD%8C#Chinese">魌</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">模一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:91.7%" tabindex="0" data-tip="模一開: k-/kw- in 2, h-/f- in 9"><div class="seg k" style="flex:2"></div><div class="seg h" style="flex:9"></div></div></td>
+          <td class="num">2</td><td class="num">9</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%BB%B2#Chinese">軲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%8E#Chinese">挎</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BA%AB#Chinese">庫</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%A4%B2#Chinese">褲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%9E%AF#Chinese">枯</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%B5%9D#Chinese">絝</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%8C%8E#Chinese">挎</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%B7%8D#Chinese">跍</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">添四開入</span></td>
+          <td class="split"><div class="pair-bar" style="width:58.3%" tabindex="0" data-tip="添四開入: k-/kw- in 0, h-/f- in 7"><div class="seg h" style="flex:7"></div></div></td>
+          <td class="num">0</td><td class="num">7</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%AF%8B#Chinese">篋</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%84%9C#Chinese">愜</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8C%A7#Chinese">匧</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%A4%B2#Chinese">㤲</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%82%8F#Chinese">悏</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">覃一開</span></td>
+          <td class="split"><div class="pair-bar" style="width:83.3%" tabindex="0" data-tip="覃一開: k-/kw- in 1, h-/f- in 9"><div class="seg k" style="flex:1"></div><div class="seg h" style="flex:9"></div></div></td>
+          <td class="num">1</td><td class="num">9</td>
+          <td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%8E#Chinese">坎</a></span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%A0%AA#Chinese">堪</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%9D%8E#Chinese">坎</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%8B%98#Chinese">勘</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E9%BE%95#Chinese">龕</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A3%A1#Chinese">磡</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%83%82#Chinese">惂</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">添四開</span></td>
+          <td class="split"><div class="pair-bar" style="width:83.3%" tabindex="0" data-tip="添四開: k-/kw- in 0, h-/f- in 10"><div class="seg h" style="flex:10"></div></div></td>
+          <td class="num">0</td><td class="num">10</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E8%AC%99#Chinese">謙</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%85%8A#Chinese">慊</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%82%94#Chinese">傔</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E5%97%9B#Chinese">嗛</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E8%86%81#Chinese">膁</a></span></td>
+        </tr>
+        <tr>
+          <td class="fin"><span class="han">耕二開</span></td>
+          <td class="split"><div class="pair-bar" style="width:91.7%" tabindex="0" data-tip="耕二開: k-/kw- in 0, h-/f- in 11"><div class="seg h" style="flex:11"></div></div></td>
+          <td class="num">0</td><td class="num">11</td>
+          <td class="exs"><span class="none">–</span></td><td class="exs"><span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E9%8F%97#Chinese">鏗</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%A1%A9#Chinese">䡩</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E6%91%BC#Chinese">摼</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E4%A1%B0#Chinese">䡰</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%A1%9C#Chinese">硜</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E3%B0%A2#Chinese">㰢</a></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>The top of the table is clean (麻二合, 支三合, 清三合, 虞三合 keep the stop every time), and so is the bottom (添, 耕, 戈, 登入 always lose it). The middle is mixed within single finals: 唐一開 has <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%85%B7#Chinese">慷</a></span> with both, and 陽三合 splits <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%A1%86#Chinese">框</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%AD%90#Chinese">筐</a> <a class="wk" href="https://en.wiktionary.org/wiki/%E7%9C%B6#Chinese">眶</a></span> between kwaang1 and hong1. Many of the clean finals rest on three or four rare characters.</p>
+
+  <h2>Is there a rule?</h2>
+  <p>If some property of the syllable decided whether 溪 kept the stop, the literary layer could encode it as a sound law. The share of readings that kept it, by each property:</p>
+</section>
+<section class="wide">
+  <div class="panel scroll">
+    <table>
+      <thead><tr><th>Property</th><th>Share with k-/kw- (dashed line: half)</th><th class="num">k-/kw-</th></tr></thead>
+      <tbody><tr class="grp"><th colspan="3">Openness</th></tr>
+        <tr tabindex="0" data-tip="rounded (合口): k-/kw- in 66 of 111 readings that have either">
+          <td>rounded (合口)</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:59.5%"></div><div class="half"></div></div></td>
+          <td class="num">66/111 · 59%</td>
+        </tr>
+        <tr tabindex="0" data-tip="open (開口): k-/kw- in 78 of 257 readings that have either">
+          <td>open (開口)</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:30.4%"></div><div class="half"></div></div></td>
+          <td class="num">78/257 · 30%</td>
+        </tr><tr class="grp"><th colspan="3">Division</th></tr>
+        <tr tabindex="0" data-tip="division I: k-/kw- in 45 of 143 readings that have either">
+          <td>division I</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:31.5%"></div><div class="half"></div></div></td>
+          <td class="num">45/143 · 31%</td>
+        </tr>
+        <tr tabindex="0" data-tip="division II: k-/kw- in 28 of 64 readings that have either">
+          <td>division II</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:43.8%"></div><div class="half"></div></div></td>
+          <td class="num">28/64 · 44%</td>
+        </tr>
+        <tr tabindex="0" data-tip="division III: k-/kw- in 48 of 100 readings that have either">
+          <td>division III</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:48.0%"></div><div class="half"></div></div></td>
+          <td class="num">48/100 · 48%</td>
+        </tr>
+        <tr tabindex="0" data-tip="division IV: k-/kw- in 23 of 61 readings that have either">
+          <td>division IV</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:37.7%"></div><div class="half"></div></div></td>
+          <td class="num">23/61 · 38%</td>
+        </tr><tr class="grp"><th colspan="3">Tone</th></tr>
+        <tr tabindex="0" data-tip="level 平: k-/kw- in 56 of 151 readings that have either">
+          <td>level 平</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:37.1%"></div><div class="half"></div></div></td>
+          <td class="num">56/151 · 37%</td>
+        </tr>
+        <tr tabindex="0" data-tip="rising 上: k-/kw- in 22 of 78 readings that have either">
+          <td>rising 上</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:28.2%"></div><div class="half"></div></div></td>
+          <td class="num">22/78 · 28%</td>
+        </tr>
+        <tr tabindex="0" data-tip="departing 去: k-/kw- in 27 of 61 readings that have either">
+          <td>departing 去</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:44.3%"></div><div class="half"></div></div></td>
+          <td class="num">27/61 · 44%</td>
+        </tr>
+        <tr tabindex="0" data-tip="entering 入: k-/kw- in 39 of 78 readings that have either">
+          <td>entering 入</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:50.0%"></div><div class="half"></div></div></td>
+          <td class="num">39/78 · 50%</td>
+        </tr><tr class="grp"><th colspan="3">Frequency</th></tr>
+        <tr tabindex="0" data-tip="common characters: k-/kw- in 46 of 133 readings that have either">
+          <td>common characters</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:34.6%"></div><div class="half"></div></div></td>
+          <td class="num">46/133 · 35%</td>
+        </tr>
+        <tr tabindex="0" data-tip="rare characters: k-/kw- in 98 of 235 readings that have either">
+          <td>rare characters</td>
+          <td class="share"><div class="share-track"><div class="share-bar" style="width:41.7%"></div><div class="half"></div></div></td>
+          <td class="num">98/235 · 42%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>Rounding matters most: rounded finals keep the stop in 59% of readings, open ones in 30%. It still does not decide. Rounded <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%AF%AC#Chinese">寬</a></span> fun1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A7%91#Chinese">科</a></span> fo1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%BF%AB#Chinese">快</a></span> faai3 and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%81%A2#Chinese">恢</a></span> fui1 lost it, and open <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%BA%AA#Chinese">溪</a></span> kai1, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E6%9B%B2#Chinese">曲</a></span> kuk1 and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E7%A2%BA#Chinese">確</a></span> kok3 kept it. Division and tone shift the share less. Rare characters keep k- somewhat more often than common ones, as reading pronunciations of bookish characters would.</p>
+  <p>Register points the same way. Words that use a 溪 character's k- form are less often vernacular than words that use its h- form: 3.4% of 1,182 tokens against 6.8% of 5,271. There are vernacular k- words, <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%B1%8B%E4%BC%81#Chinese">屋企</a></span> and <span class="han"><a class="wk" href="https://en.wiktionary.org/wiki/%E5%82%BE%E5%81%88#Chinese">傾偈</a></span> among them, but overall h-/f- is the native outcome and the k- forms lean learned. So the stop is not a colloquial layer either, and does not belong in <code>predict_yue_coll</code>.</p>
+
+  <h2>The options</h2>
+  <p>Literary coverage of the 17,595 attested readings under each policy, with everything else in the working copy unchanged:</p>
+</section>
+<section class="wide">
+  <div class="panel scroll">
+    <table>
+      <thead><tr><th>Policy for 溪</th><th class="num">Readings matched</th><th class="num">vs upstream</th></tr></thead>
+      <tbody>
+        <tr><td>k- before every final</td><td class="num">11,032</td><td class="num">-76</td></tr>
+        <tr><td>Upstream: h- before every final<span class="note">the live module</span></td><td class="num">11,108</td><td class="num">–</td></tr>
+        <tr class="rec"><td>Upstream, with the j- rule made reachable<span class="note">recommended</span></td><td class="num">11,119</td><td class="num">+11</td></tr>
+        <tr><td>Rounded finals keep kw-</td><td class="num">11,126</td><td class="num">+18</td></tr>
+        <tr><td>Rounded finals keep kw- unless the rhyme is u or o</td><td class="num">11,140</td><td class="num">+32</td></tr>
+        <tr><td>Current working copy: k- before 14 finals<span class="note">chosen from the data</span></td><td class="num">11,193</td><td class="num">+85</td></tr>
+        <tr><td>Current working copy, with the j- rule</td><td class="num">11,204</td><td class="num">+96</td></tr>
+        <tr><td>Best choice for each final<span class="note">the most any list of finals can do</span></td><td class="num">11,242</td><td class="num">+134</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="col">
+  <p>A rounding rule recovers only 18 to 32 readings, because rounded finals split. The 14-final list recovers 85, and no list of finals can recover more than 134, since the rest of the k- readings sit in finals where h- is commoner. Making the j- rule reachable adds 11 more, on top of either upstream or the current list.</p>
+
+  <div class="callout">
+    <p><b>Recommendation: return to upstream's h-/f- everywhere, and make the j- rule reachable.</b></p>
+    <p>This applies the principle already used for 梗攝 II: the literary prediction gives the regular sound change, not the most frequent form. For 溪 the regular change is h-/f-. It is the majority outcome, the native one, and needs no list to justify it. The 14-final list buys 85 readings by recording which words kept the stop; that is lexical information, and a list of finals is a poor place to keep it. The j- rule is different in kind: it is conditioned (尤, 侵 and 緝, before a high front vowel), the module's author meant it to run, and it gains 11 readings without a list.</p>
+    <p>In code, that is upstream's full <code>debuccalisation_inducing_yue</code> minus finals 136 and 139–142. Literary coverage would go from 63.61% to 63.19%, giving back 74 of the readings the working copy gained.</p>
+  </div>
+</section>
+
+</main>
+<div id="tip" role="tooltip"></div>
+<script>
+(function () {
+  var tip = document.getElementById("tip");
+  function show(el) {
+    tip.textContent = el.getAttribute("data-tip");
+    var r = el.getBoundingClientRect();
+    tip.classList.add("on");
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), window.innerWidth - w - 8);
+    var y = r.top - h - 8;
+    if (y < 8) y = r.bottom + 8;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  }
+  function hide() { tip.classList.remove("on"); }
+  document.querySelectorAll("[data-tip]").forEach(function (el) {
+    el.addEventListener("pointerenter", function () { show(el); });
+    el.addEventListener("pointerleave", hide);
+    el.addEventListener("focus", function () { show(el); });
+    el.addEventListener("blur", hide);
+  });
+  window.addEventListener("scroll", hide, { passive: true });
+})();
+</script>
+</body>
+</html>
