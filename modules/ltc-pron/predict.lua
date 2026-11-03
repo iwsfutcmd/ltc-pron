@@ -1106,6 +1106,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 	elseif final == 32 then
 		final_result = "A"
 
+	-- 覺 after voiceless 知 and 徹 gives -oek, across phonetic series:
+	-- 卓 倬 zoek3, 啄 琢 doek3, 斲 zoek3, 踔 coek3 (澄 keeps -ok: 擢 濯 zok6)
+	elseif final == 10 and (initial == 9 or initial == 10) then
+		final_result = "ON"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
