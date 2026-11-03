@@ -1144,6 +1144,12 @@ local function yue_reflex(initial, final, tone, colloquial)
 		initial_result = "s"
 	end
 
+	-- 以 before rounded 清 and 昔 stays unrounded, as in Mandarin yíng, yì:
+	-- 營 jing4, 役 疫 jik6
+	if initial == 36 and (final == 122 or final == 124) then
+		initial_result = "j"
+	end
+
 	-- set where a colloquial rime lengthens the vowel but keeps the 陰入 tone 1
 	local short_entering = false
 
