@@ -1110,11 +1110,21 @@ local function yue_reflex(initial, final, tone, colloquial)
 		end
 	end
 
+	-- set where a colloquial rime lengthens the vowel but keeps the 陰入 tone 1
+	local short_entering = false
+
 	if colloquial then
 		if colloquial_geng_2_yue[final] and final_result == "aN" then
 			final_result = "AN"
 		elseif colloquial_geng_34_yue[final] and final_result == "IN" then
 			final_result = "eN"
+		-- 德: 黑 haak1, 刻 haak1, 肋 laak6.
+		elseif final == 131 and final_result == "aN" then
+			final_result = "AN"
+			short_entering = true
+		-- 怗: 疊 daap6, 頰 gaap3, 莢 gaap3.
+		elseif final == 158 and final_result == "im" then
+			final_result = "Am"
 		-- 脂 after 心 only: 四 sei3, 死 sei2, 肆 sei3.
 		elseif final == 15 and initial == 16 and final_result == "i" then
 			final_result = "ei"
@@ -1125,7 +1135,7 @@ local function yue_reflex(initial, final, tone, colloquial)
 	if tone == 4 then
 		if fully_voiced_initial[initial] or partially_voiced_initial[initial] then
 			tone_result = 6
-		elseif mw.ustring.find(final_result, "^[AiouOYe]") ~= nil then
+		elseif not short_entering and mw.ustring.find(final_result, "^[AiouOYe]") ~= nil then
 			tone_result = 3
 		else
 			tone_result = 1

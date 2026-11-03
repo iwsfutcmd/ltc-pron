@@ -18,33 +18,16 @@ from pathlib import Path
 
 from ltcpron.chars import load_chars
 from ltcpron.predict import LtcPron
+from ltcpron.rules import rule_label as implemented_rule
 from ltcpron.words import load_tokens
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "derived"
 JYUTPING = re.compile(r"^(gw|kw|ng|[bpmfdtnlgkhwzcsj])?([a-z]+)([1-6])$")
 
-FULLY_VOICED = {3, 7, 11, 15, 17, 20, 22, 25, 27, 30, 33}
-GENG_2 = {109, 110, 113, 114, 117, 118, 119, 120}
-GENG_34 = {111, 115, 121, 123, 125, 127}
-
 
 def split_jp(s):
     m = JYUTPING.match(s)
     return (m.group(1) or "", m.group(2), m.group(3)) if m else None
-
-
-def implemented_rule(cat) -> str | None:
-    """Which predict_yue_coll rule(s) produce the colloquial form."""
-    parts = []
-    if cat.final in GENG_2:
-        parts.append("梗二 -aang/-aak")
-    if cat.final in GENG_34:
-        parts.append("梗三四 -eng/-ek")
-    if cat.tone == 2 and cat.initial in FULLY_VOICED:
-        parts.append("全濁上 aspirate + 5")
-    if cat.final == 15 and cat.initial == 16:
-        parts.append("脂心 -ei")
-    return " + ".join(parts) or None
 
 
 def rhyme_swap(old, new, tone_map=None):
@@ -62,9 +45,7 @@ def onset_swap(old, new):
 # Candidate rules not (yet) in predict_yue_coll: eligibility on MC categories,
 # and a transform on the literary prediction's (onset, rhyme, tone).
 CANDIDATES = {
-    "德 -ak → -aak": (lambda c: c.final == 131, rhyme_swap("ak", "aak")),
     "緝 -ap → -aap": (lambda c: c.final in (141, 142), rhyme_swap("ap", "aap", {"1": "3"})),
-    "怗 -ip → -aap": (lambda c: c.final == 158, rhyme_swap("ip", "aap")),
     "咍 -oi → -aai": (lambda c: c.final == 41, rhyme_swap("oi", "aai")),
     "豪 -ou → -aau": (lambda c: c.final == 89, rhyme_swap("ou", "aau")),
     "蕭宵 -iu → -eu": (lambda c: c.final in (91, 92, 93), rhyme_swap("iu", "eu")),

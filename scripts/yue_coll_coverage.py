@@ -13,33 +13,10 @@ from pathlib import Path
 
 from ltcpron.chars import load_chars
 from ltcpron.predict import LtcPron
+from ltcpron.rules import COLLOQUIAL_RULES as RULES
+from ltcpron.rules import colloquial_rules as rules_for
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "derived"
-
-FULLY_VOICED = {3, 7, 11, 15, 17, 20, 22, 25, 27, 30, 33}
-GENG_2 = {109, 110, 113, 114, 117, 118, 119, 120}
-GENG_34 = {111, 115, 121, 123, 125, 127}
-
-RULES = {
-    "geng2": "梗二 -aang/-aak",
-    "geng34": "梗三四 -eng/-ek",
-    "voiced_rising": "全濁上 aspirate + tone 5",
-    "zhi": "脂 after 心 -ei",
-}
-
-
-def rules_for(cat) -> tuple[str, ...]:
-    """Which colloquial rules could apply to an MC reading's categories."""
-    out = []
-    if cat.final in GENG_2:
-        out.append("geng2")
-    if cat.final in GENG_34:
-        out.append("geng34")
-    if cat.tone == 2 and cat.initial in FULLY_VOICED:
-        out.append("voiced_rising")
-    if cat.final == 15 and cat.initial == 16:
-        out.append("zhi")
-    return tuple(out)
 
 
 def main():
