@@ -168,6 +168,8 @@ class Scribunto:
 
         def gsub(s, pattern, repl, n=None):
             rx = lua_pattern(pattern)
+            if isinstance(repl, (int, float)):  # Lua converts numbers to strings
+                repl = str(int(repl)) if float(repl).is_integer() else str(repl)
             if isinstance(repl, str):
                 fn = _lua_repl(repl)
             else:

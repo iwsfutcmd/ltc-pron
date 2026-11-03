@@ -91,6 +91,7 @@ local function ltc_table(titlechar, text, indiv_num, count)
 		pronunciation[7],
 		m_cmn_pron.py_number_to_mark(m_ltc_predict.predict_cmn(initial_type, final_type, data.tone_number[tone])),
 		m_ltc_predict.predict_yue(initial_type, final_type, data.tone_number[tone]),
+		m_ltc_predict.predict_yue_coll(initial_type, final_type, data.tone_number[tone]) or "",
 	}
 end
 
@@ -121,8 +122,11 @@ function export.ipa(index_text, preview)
 		"<small>[[w:Bernhard Karlgren|Bernhard<br>Karlgren]]</small>",
 		"<small>Expected<br>Mandarin<br>Reflex</small>",
 		"<small>Expected<br>Cantonese<br>Reflex</small>",
+		"<small>Expected<br>Colloquial<br>Cantonese<br>Reflex</small>",
 	}
-	
+	-- shown only when some reading has a colloquial reflex distinct from the literary one
+	local colloquial_field = #fields
+
 	for i, cp in ipairs { codepoint(titlechar, 1, -1) } do
 		local ch = u(cp)
 		local data_module = safe_require("Module:zh/data/ltc-pron/" .. ch)
@@ -178,7 +182,9 @@ function export.ipa(index_text, preview)
 				for _, result in ipairs(results) do
 					table.insert(field_set, result[field_index])
 				end
-				table.insert(output_text, fmt.lv2 .. field .. fmt.lv3 .. table.concat(field_set, fmt.lv3))
+				if field_index ~= colloquial_field or table.concat(field_set) ~= "" then
+					table.insert(output_text, fmt.lv2 .. field .. fmt.lv3 .. table.concat(field_set, fmt.lv3))
+				end
 			else
 				table.insert(output_text, fmt.lv1 .. field)
 			end
