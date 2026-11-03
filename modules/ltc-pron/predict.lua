@@ -1137,6 +1137,13 @@ local function yue_reflex(initial, final, tone, colloquial)
 		final_result = "AN"
 	end
 
+	-- 崇 before open 支脂之 outside the level tone is a fricative, as in Mandarin
+	-- shì: 士 仕 事 si6
+	if initial == 20 and (tone == 2 or tone == 3) and not voiced_rising
+		and (final == 11 or final == 13 or final == 15 or final == 17 or final == 19) then
+		initial_result = "s"
+	end
+
 	-- set where a colloquial rime lengthens the vowel but keeps the 陰入 tone 1
 	local short_entering = false
 
