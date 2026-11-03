@@ -4,7 +4,9 @@ predict_yue_coll produces.
 Each miss is classified as
   phonetic   matches (ignoring tone) a reading of the character's phonetic
              component ({{Han compound}} c?=p) or, failing that, of an IDS
-             component: likely 有邊讀邊 or analogy
+             component, whose MC initial+final differ from the character's:
+             likely 有邊讀邊 or analogy. (A shared MC category means a
+             shared regular change, so those stay in the parts tally.)
   otherwise  by which parts differ from the nearest prediction
              (onset / rhyme / tone)
 and split by whether the character is common (appears in at least
@@ -72,7 +74,9 @@ def load_components():
                             phon.add(part)
             ids = set()
             for s in rec["ids"]:
-                ids.update(ch for ch in IDS_OPERATORS.sub("", s) if ch != rec["char"])
+                # IDS strings also hold placeholders (A, K, ？); keep only CJK.
+                ids.update(ch for ch in IDS_OPERATORS.sub("", s)
+                           if ch != rec["char"] and ch.isalpha() and ord(ch) > 0x2E7F)
             out[rec["char"]] = (phon, ids)
     return out
 
@@ -94,9 +98,17 @@ def main(min_words: int):
     components = load_components()
     words = word_counts()
 
-    def toneless_readings(ch):
+    def mc_keys(ch):
+        """MC initial + final/division/openness of each reading of ch."""
         c = chars.get(ch)
-        return {y.toneless for y in c.yue} if c else set()
+        return {r[:4] for r in c.mc} if c else set()
+
+    def analogous(ch, toneless, comp):
+        """ch's reading copies comp's, and isn't just a shared MC homophone."""
+        c = chars.get(comp)
+        if not c or toneless not in {y.toneless for y in c.yue}:
+            return False
+        return not (mc_keys(ch) & mc_keys(comp))
 
     summary = Counter()
     by_class = defaultdict(Counter)       # class -> common/rare counts
@@ -132,9 +144,9 @@ def main(min_words: int):
             summary[f"missed {freq}"] += 1
 
             phon, ids = components.get(c.char, (set(), set()))
-            phon_hit = next((x for x in phon if y.toneless in toneless_readings(x)), None)
+            phon_hit = next((x for x in sorted(phon) if analogous(c.char, y.toneless, x)), None)
             ids_hit = None if phon_hit else next(
-                (x for x in sorted(ids) if y.toneless in toneless_readings(x)), None)
+                (x for x in sorted(ids) if analogous(c.char, y.toneless, x)), None)
             if phon_hit or ids_hit:
                 cls = "phonetic (marked)" if phon_hit else "component (IDS)"
                 by_class[cls][freq] += 1
