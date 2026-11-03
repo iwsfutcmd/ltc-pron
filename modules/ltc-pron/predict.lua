@@ -1075,6 +1075,11 @@ local function yue_reflex(initial, final, tone, colloquial)
 		or final == 43 and initial >= 13 and initial <= 17 then
 		final_result = "En"
 
+	-- 月合 and 乏 after voiced labials have a short vowel: 罰 fat6, 襪 mat6, 乏 fat6
+	-- (voiceless 發 faat3, 法 faat3 keep the long one)
+	elseif (final == 68 or final == 148) and (initial == 3 or initial == 4) then
+		final_result = "an"
+
 	else
 		local final_class = final_class_yue[final]
 		final_result = rhyme_outcomes_yue[final_class]
