@@ -147,8 +147,8 @@ def check_locally(user: str, built: dict[str, str], pages: list[str]) -> None:
             out = mod.show(frame)
             if "Expected" not in out:
                 sys.exit(f"local check: no table rendered for {page}")
-            coll = "Colloquial" in out
-            print(f"  {page}: table OK" + (", colloquial row" if coll else ", no colloquial row"))
+            coll = 'title="colloquial"' in out
+            print(f"  {page}: table OK" + (", with colloquial forms" if coll else ", literary only"))
 
 
 def load_env() -> None:
