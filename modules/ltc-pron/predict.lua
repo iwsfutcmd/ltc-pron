@@ -1203,13 +1203,30 @@ function export.predict_yue(initial, final, tone)
 	return yue_reflex(initial, final, tone, false)
 end
 
+-- Syllables Cantonese does not have, which the colloquial rimes would otherwise
+-- give after some onsets (亦 *jek6, 覓 *mek6, 寧 *neng4, 轟 *faang1).
+local impossible_colloquial_yue = {
+	["jek"] = true,
+	["mek"] = true,
+	["gek"] = true,
+	["nek"] = true,
+	["neng"] = true,
+	["faang"] = true,
+	["naang"] = true,
+	["naak"] = true,
+	["taak"] = true,
+}
+
 -- Expected colloquial (白讀) Cantonese reflex, or nil where the colloquial
--- layer is not expected to differ from predict_yue.
+-- layer is not expected to differ from predict_yue, or would give a syllable
+-- Cantonese does not have.
 function export.predict_yue_coll(initial, final, tone)
 	local colloquial = yue_reflex(initial, final, tone, true)
-	if colloquial ~= yue_reflex(initial, final, tone, false) then
-		return colloquial
+	if colloquial == yue_reflex(initial, final, tone, false)
+		or impossible_colloquial_yue[mw.ustring.gsub(colloquial, "<sup>%d</sup>", "")] then
+		return nil
 	end
+	return colloquial
 end
 
 return export
